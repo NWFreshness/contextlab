@@ -1,0 +1,46 @@
+{
+  "description": "Fixture where retrieval+memory+tools exceed budget",
+  "budget": 300,
+  "system": "You are a helpful assistant. Answer questions using the provided context. Cite your sources using [chunk_id] format.",
+  "query": "What is the return policy for headphones?",
+  "memory": [
+    {
+      "memory_id": "mem_A",
+      "text": "Memory item A containing detailed information about our customer service policies and procedures that we follow for handling returns and exchanges. Memory item A containing detailed information about our customer service policies and procedures that we follow for handling returns and exchanges. Memory item A containing detailed information about our customer service policies and procedures that we follow for handling returns and exchanges. Memory item A containing detailed information about our customer service policies and procedures that we follow for handling returns and exchanges. Memory item A containing detailed information about our customer service policies and procedures that we follow for handling returns and exchanges. ",
+      "created_at": "2024-01-01T00:00:00Z",
+      "priority": 0
+    },
+    {
+      "memory_id": "mem_B",
+      "text": "Memory item B with additional content about our refund process and timeline expectations for customers. Memory item B with additional content about our refund process and timeline expectations for customers. Memory item B with additional content about our refund process and timeline expectations for customers. Memory item B with additional content about our refund process and timeline expectations for customers. Memory item B with additional content about our refund process and timeline expectations for customers. ",
+      "created_at": "2024-02-01T00:00:00Z",
+      "priority": 0
+    },
+    {
+      "memory_id": "mem_C",
+      "text": "Memory item C with more content about our product warranty and support policies for customers. Memory item C with more content about our product warranty and support policies for customers. Memory item C with more content about our product warranty and support policies for customers. Memory item C with more content about our product warranty and support policies for customers. Memory item C with more content about our product warranty and support policies for customers. ",
+      "created_at": "2024-03-01T00:00:00Z",
+      "priority": 1
+    }
+  ],
+  "tools": [
+    {
+      "tool_id": "tool_1",
+      "name": "search",
+      "content": "Tool result 1 containing detailed search results about return policies and procedures that customers should follow when returning items. Tool result 1 containing detailed search results about return policies and procedures that customers should follow when returning items. Tool result 1 containing detailed search results about return policies and procedures that customers should follow when returning items. Tool result 1 containing detailed search results about return policies and procedures that customers should follow when returning items. Tool result 1 containing detailed search results about return policies and procedures that customers should follow when returning items. ",
+      "must_keep": false
+    },
+    {
+      "tool_id": "tool_2",
+      "name": "lookup",
+      "content": "Tool result 2 containing lookup data about item availability and inventory status for the requested products. Tool result 2 containing lookup data about item availability and inventory status for the requested products. Tool result 2 containing lookup data about item availability and inventory status for the requested products. Tool result 2 containing lookup data about item availability and inventory status for the requested products. Tool result 2 containing lookup data about item availability and inventory status for the requested products. ",
+      "must_keep": false
+    },
+    {
+      "tool_id": "tool_3",
+      "name": "critical",
+      "content": "Critical tool result that must be kept for context in customer interactions.",
+      "must_keep": true
+    }
+  ]
+}

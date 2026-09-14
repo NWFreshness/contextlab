@@ -1,0 +1,24 @@
+{"id": "r001", "query": "E-4471", "relevant_chunk_ids": [], "relevant_doc_ids": ["error_codes"], "intent": "lexical", "notes": "Exact error code lookup - should find error_codes.md"}
+{"id": "r002", "query": "E-4472", "relevant_chunk_ids": [], "relevant_doc_ids": ["error_codes", "incident_runbook"], "intent": "lexical", "notes": "Neighbor code - appears in both error_codes and incident_runbook"}
+{"id": "r003", "query": "POL-REF-30", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3"], "intent": "lexical", "notes": "Policy ID lookup - unique to v3"}
+{"id": "r004", "query": "inventory reservation expired", "relevant_chunk_ids": [], "relevant_doc_ids": ["error_codes"], "intent": "lexical", "notes": "Exact error meaning from table"}
+{"id": "r005", "query": "E-6001", "relevant_chunk_ids": [], "relevant_doc_ids": ["error_codes"], "intent": "lexical", "notes": "Shipping error code"}
+{"id": "r006", "query": "how long can I send something back", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3", "onboarding_faq"], "intent": "paraphrase", "notes": "Paraphrase of refund window - should return v3 (30 days), not v1 (14 days)"}
+{"id": "r007", "query": "what is the return window", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3", "onboarding_faq"], "intent": "paraphrase", "notes": "Paraphrase asking about refund timeframe"}
+{"id": "r008", "query": "money back guarantee timeframe", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3"], "intent": "paraphrase", "notes": "Paraphrase about refund period"}
+{"id": "r009", "query": "how long does ground shipping take to west coast", "relevant_chunk_ids": [], "relevant_doc_ids": ["shipping_sla"], "intent": "paraphrase", "notes": "Paraphrase of shipping SLA - West Coast ground = 5 business days"}
+{"id": "r010", "query": "west coast delivery time", "relevant_chunk_ids": [], "relevant_doc_ids": ["shipping_sla"], "intent": "paraphrase", "notes": "Another phrasing of west coast shipping"}
+{"id": "r011", "query": "Starter plan price", "relevant_chunk_ids": [], "relevant_doc_ids": ["pricing"], "intent": "table", "notes": "Price from pricing table - $9/month"}
+{"id": "r012", "query": "Professional plan users", "relevant_chunk_ids": [], "relevant_doc_ids": ["pricing"], "intent": "table", "notes": "Users from pricing table - Up to 5 users"}
+{"id": "r013", "query": "Extra Users addon cost", "relevant_chunk_ids": [], "relevant_doc_ids": ["pricing"], "intent": "table", "notes": "Add-on price from pricing table - $5/user/month"}
+{"id": "r014", "query": "current refund policy", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3"], "intent": "version", "notes": "Current policy - should prefer v3 over superseded v1"}
+{"id": "r015", "query": "newest return policy", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3"], "intent": "version", "notes": "Latest policy version"}
+{"id": "r016", "query": "old refund window", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v1"], "intent": "version", "notes": "Old/superseded policy - v1 with 14 days"}
+{"id": "r017", "query": "2022 refund policy", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v1"], "intent": "version", "notes": "Historical policy - v1 was superseded"}
+{"id": "r018", "query": "does my order qualify for a refund", "relevant_chunk_ids": [], "relevant_doc_ids": ["refund_policy_v3"], "intent": "negative", "notes": "Topic not directly covered - corpus has policy but not general eligibility"}
+{"id": "r019", "query": "what happens if my card is declined", "relevant_chunk_ids": [], "relevant_doc_ids": ["error_codes"], "intent": "negative", "notes": "Declined card is E-1001 not in this specific query context"}
+{"id": "r020", "query": "apple return policy", "relevant_chunk_ids": [], "relevant_doc_ids": [], "intent": "negative", "notes": "Specific brand not in corpus"}
+{"id": "r021", "query": "E-4471 resolution steps", "relevant_chunk_ids": [], "relevant_doc_ids": ["incident_runbook"], "intent": "lexical", "notes": "Error code with context - runbook gives resolution"}
+{"id": "r022", "query": "how to fix E-4471", "relevant_chunk_ids": [], "relevant_doc_ids": ["incident_runbook"], "intent": "paraphrase", "notes": "Paraphrase of error resolution"}
+{"id": "r023", "query": "5 business days west coast", "relevant_chunk_ids": [], "relevant_doc_ids": ["shipping_sla"], "intent": "table", "notes": "Numeric SLA from shipping table"}
+{"id": "r024", "query": "customer support hours", "relevant_chunk_ids": [], "relevant_doc_ids": [], "intent": "negative", "notes": "Not covered in corpus"}

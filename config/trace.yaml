@@ -1,0 +1,17 @@
+# Slice 4 — LLM tracer.
+#
+# Tracing is on by default for the CLI entry points (retrieve / assemble /
+# ingest / evals). Library callers that never start a trace record nothing.
+enabled: true
+
+# JSONL files land here, one file per UTC day: data/traces/YYYYMMDD.jsonl
+dir: data/traces
+
+# Attribute keys are matched case-insensitively, segment by segment, so
+# "api_key" / "http_authorization" / "db_password" are redacted while token
+# *counts* ("prompt_tokens", "input_tokens") stay readable.
+redact_keys: ["api_key", "authorization", "token", "password"]
+
+# Do not write full prompts into spans by default. When false, assemble.pack and
+# generate spans carry prompt_sha256 + prompt_chars + an 80-char preview only.
+include_prompt: false

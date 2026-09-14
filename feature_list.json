@@ -1,0 +1,228 @@
+{
+  "features": [
+    {
+      "id": "feat-r1",
+      "name": "Project skeleton + types + config",
+      "status": "done",
+      "verify_command": "python -c 'from contextlab import get_config; print(get_config())'",
+      "notes": "Created layout, pyproject.toml, config/retrieval.yaml, types.py, config.py"
+    },
+    {
+      "id": "feat-r2",
+      "name": "Chunker with provenance",
+      "status": "done",
+      "verify_command": "pytest tests/test_chunking.py -q",
+      "notes": "Heading-aware splitting, token windows with overlap, stable chunk_ids. 6 tests pass."
+    },
+    {
+      "id": "feat-r3",
+      "name": "Corpus + ingest",
+      "status": "done",
+      "verify_command": "python -m contextlab.ingest",
+      "notes": "8 docs created (34 chunks total), ingest writes data/chunks.jsonl"
+    },
+    {
+      "id": "feat-r4",
+      "name": "BM25 index",
+      "status": "done",
+      "verify_command": "pytest tests/test_bm25.py -q",
+      "notes": "Pure-Python Okapi BM25 with tiktoken. 3 tests pass."
+    },
+    {
+      "id": "feat-r5",
+      "name": "Dense index",
+      "status": "done",
+      "verify_command": "pytest tests/test_dense.py -q",
+      "notes": "sentence-transformers all-MiniLM-L6-v2, cosine similarity. 3 tests pass."
+    },
+    {
+      "id": "feat-r6",
+      "name": "RRF hybrid + CLI",
+      "status": "done",
+      "verify_command": "python -m contextlab.retrieve --query 'E-4471' --k 5 --mode hybrid",
+      "notes": "RRF fusion (k=60), CLI table with rank/citation/rrf/bm25/dense/snippet"
+    },
+    {
+      "id": "feat-r7",
+      "name": "Retrieval golden eval",
+      "status": "done",
+      "verify_command": "python -m contextlab.eval_retrieval",
+      "notes": "24 golden cases, recall@5: BM25=0.771, Dense=0.917, Hybrid=0.917. Hybrid PASS."
+    },
+    {
+      "id": "feat-a1",
+      "name": "Shared tokenizer",
+      "status": "done",
+      "verify_command": "pytest tests/test_assemble.py -k tokens -q",
+      "notes": "count_tokens() using tiktoken cl100k_base. 3 tokenizer tests pass."
+    },
+    {
+      "id": "feat-a2",
+      "name": "Packer without retrieval",
+      "status": "done",
+      "verify_command": "pytest tests/test_assemble.py -q",
+      "notes": "Budget enforcement, must_keep tools, oldest-first memory drops. 19 assembly tests pass."
+    },
+    {
+      "id": "feat-a3",
+      "name": "Wire retrieve \u2192 pack",
+      "status": "done",
+      "verify_command": "python -m contextlab assemble --query 'what does E-4471 mean' --budget 800",
+      "notes": "Retrieval blocks get citation overhead, prompt format: system \u2192 retrieval \u2192 memory \u2192 tools \u2192 user"
+    },
+    {
+      "id": "feat-a4",
+      "name": "Drop report + example artifact",
+      "status": "done",
+      "verify_command": "cat artifacts/assembly_examples.json",
+      "notes": "3 cases: comfortable (0 drops), tight (2 drops), pathological (1 drop)"
+    },
+    {
+      "id": "feat-a5",
+      "name": "Optional generate flag",
+      "status": "done",
+      "verify_command": "python -m contextlab assemble --query 'test' --budget 800 --generate",
+      "notes": "Flag present, skips if OPENAI_API_KEY not set, requires key to actually generate"
+    },
+    {
+      "id": "feat-e1",
+      "name": "Report schema + runner skeleton",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite retrieval",
+      "notes": "EvalReport with suites/gates/cases, run_suite returns (results, metrics), write_latest writes artifacts/eval_report.json"
+    },
+    {
+      "id": "feat-e2",
+      "name": "Assembly suite",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite assembly",
+      "notes": "7 deterministic invariant checks: under_budget, query_kept, system_kept, citations_resolve, no_dropped_cited, no_empty_keep, negative_retrieval"
+    },
+    {
+      "id": "feat-e3",
+      "name": "Answer golden + deterministic graders",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite answer --offline",
+      "notes": "14 answer cases, graders: citation_support, required_facts, forbidden_facts, refusal_on_missing. Offline mode skips fact checks without failing."
+    },
+    {
+      "id": "feat-e4",
+      "name": "Gates + mutation experiment",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite all --offline",
+      "notes": "gates.yaml declares thresholds; BM25-only mutation (hybrid_k=0) fails paraphrase gate (0.000 < 0.60). Default config passes all gates."
+    },
+    {
+      "id": "feat-e5",
+      "name": "Judge path (optional)",
+      "status": "done",
+      "verify_command": "OPENAI_API_KEY=... python -m contextlab.evals run --suite answer",
+      "notes": "Rubric in evals/rubrics/answer_v1.md, judge_grader in graders.py, structured output {score, passed, reason}, threshold \u2265 2. Skips gracefully when key absent."
+    },
+    {
+      "id": "feat-t1",
+      "name": "Tracer + in-memory exporter",
+      "status": "done",
+      "verify_command": "pytest tests/test_trace.py -k parent -q",
+      "notes": "src/contextlab/trace/tracer.py: start_trace/start_span, contextvar current span, nested spans get parent_span_id, secrets.token_hex ids (32/16 hex). InMemoryExporter for tests."
+    },
+    {
+      "id": "feat-t2",
+      "name": "JSONL export + show CLI",
+      "status": "done",
+      "verify_command": "python -m contextlab assemble --query 'what does E-4471 mean' --budget 800 && python -m contextlab.trace show --last",
+      "notes": "One JSON object per span per line in data/traces/YYYYMMDD.jsonl; trace show --last/--trace/--case prints summary + indented tree (durations, status, chunk/dropped ids); trace list"
+    },
+    {
+      "id": "feat-t3",
+      "name": "Instrument retrieve + assemble",
+      "status": "done",
+      "verify_command": "pytest tests/test_trace.py -q -k 'retrieve or pack'",
+      "notes": "Spans retrieve.<mode> + retrieve.bm25/dense/fuse + assemble.pack; chunk_ids on the retrieve span equals the Hit list; ranking behavior unchanged; trace_id wired onto settings"
+    },
+    {
+      "id": "feat-t4",
+      "name": "Instrument eval runner",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite all --offline && python -m contextlab.trace show --case r001",
+      "notes": "One eval.case trace per case; CaseResult.trace_id in artifacts/eval_report.json; --case resolves the latest trace whose eval.case case_id matches"
+    },
+    {
+      "id": "feat-t5",
+      "name": "Redaction + README",
+      "status": "done",
+      "verify_command": "pytest tests/test_trace.py -q -k redact",
+      "notes": "redact_keys matched per key segment so prompt_tokens/input_tokens stay readable; value scrub for sk-/Bearer/key=secret; README tracing section + missing_context flagging"
+    },
+    {
+      "id": "feat-m1",
+      "name": "Signals + policy + dry-run CLI",
+      "status": "done",
+      "verify_command": "pytest tests/test_router.py -q -k 'signals or policy'",
+      "notes": "router/signals.py (identifier regex, keyword intent_hint, conflict) + router/policy.py (first-match yaml rules, unknown when-keys fail loud) + python -m contextlab.route --query ... --dry-run"
+    },
+    {
+      "id": "feat-m2",
+      "name": "Router golden set (19 cases)",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite router --offline",
+      "notes": "evals/router_golden.jsonl: 4+ identifier->cheap, 3 version + 2 table + 2 paraphrase + 2 conflict->strong, 2 negative->cheap, 1 default. Intent labels must match the shipped policy (intent_accuracy 1.0)."
+    },
+    {
+      "id": "feat-m3",
+      "name": "Trace + assemble hook",
+      "status": "done",
+      "verify_command": "python -m contextlab assemble --query 'what does E-4471 mean' --budget 800 --generate && python -m contextlab.trace show --last",
+      "notes": "router.decide span (route, model, reason, intent_hint, has_identifier, dry_run) nested under the assemble/eval tree; assemble --generate routes then calls the routed model"
+    },
+    {
+      "id": "feat-m4",
+      "name": "Fallback",
+      "status": "done",
+      "verify_command": "pytest tests/test_router.py -q -k fallback",
+      "notes": "generate.py retries once with models.fallback when the primary raises: span ok with fallback_used=true and primary_error; both failing propagates. Stub client, no key needed."
+    },
+    {
+      "id": "feat-m5",
+      "name": "Cost fields (no invented numbers)",
+      "status": "done",
+      "verify_command": "pytest tests/test_router.py -q -k cost",
+      "notes": "prices_usd_per_1m null -> cost_usd_estimate omitted (never 0.0); flat number or {input, output} split when filled in"
+    },
+    {
+      "id": "feat-c1",
+      "name": "Fingerprint + exact cache",
+      "status": "done",
+      "verify_command": "pytest tests/test_cache.py -q -k 'fingerprint or exact'",
+      "notes": "cache/fingerprint.py (corpus_version from data/chunks.jsonl, retrieve_mode, budget_tokens, system_hash, route/model) + normalized-query exact layer; a fingerprint mismatch is a miss even for identical text"
+    },
+    {
+      "id": "feat-c2",
+      "name": "Semantic lookup + guards",
+      "status": "done",
+      "verify_command": "pytest tests/test_cache.py -q -k 'semantic or guard'",
+      "notes": "cosine over stored query embeddings (same sentence-transformers stack as dense retrieval); guards for identifiers, numbers, mid-sentence capitalized entities and version-word groups. Guards default ON: an empty guards:{} does not disable them."
+    },
+    {
+      "id": "feat-c3",
+      "name": "Cache golden set (14) + gates",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite cache --offline",
+      "notes": "evals/cache_golden.jsonl: 8 should_hit (5 paraphrases + 2 exact + 1 hard paraphrase at 0.54), 6 must_miss (old-vs-current, E-4471-vs-E-4472, region, plan, mode, budget). Measured: should_hit_rate 0.875, false_hit_rate 0.000; gates 0.80 / 0.00"
+    },
+    {
+      "id": "feat-c4",
+      "name": "Wire into the answer path + traces",
+      "status": "done",
+      "verify_command": "python -m contextlab.cache lookup --query 'What does E-4471 mean?' && python -m contextlab.trace show --last",
+      "notes": "cache/answer.py: assemble -> route -> cache.lookup -> hit? stored answer : generate -> cache.write. cache.lookup/cache.write spans with hit/score/reason/cache_id. A hit skips generation and the write."
+    },
+    {
+      "id": "feat-c5",
+      "name": "Mutation note",
+      "status": "done",
+      "verify_command": "python -m contextlab.evals run --suite cache --offline  # with require_fingerprint: false",
+      "notes": "Recorded in progress.md: threshold 0.99 -> should_hit 0.250 (FAIL); require_fingerprint:false -> false_hit 0.333 (FAIL, c011+c012); guards off at 0.50 -> false_hit 0.667 (c008,c009,c010,c014)"
+    }
+  ]
+}

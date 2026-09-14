@@ -1,0 +1,28 @@
+# ── local runtime stores (regenerable, machine-specific) ─────────────────────
+# Traces and cache entries hold query text from local runs; regenerate with the CLI.
+data/traces/
+data/cache.jsonl
+
+# Timestamped eval run logs (artifacts/eval_report.json is the stable snapshot)
+artifacts/eval_20*.json
+
+# ── python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# ── secrets / editor ──────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.swp
+.DS_Store

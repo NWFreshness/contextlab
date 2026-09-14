@@ -1,0 +1,9 @@
+chunk_tokens: 256
+chunk_overlap_tokens: 32
+encoding: cl100k_base
+bm25_top_n: 50
+dense_top_n: 50
+rrf_k: 60
+embedding_model: all-MiniLM-L6-v2
+hybrid_k: 5
+rerank: false

@@ -1,0 +1,8 @@
+budget_tokens: 2000
+reserves:
+  system: 300
+  query: 200
+  tools: 400
+  memory: 300
+  retrieval: 700
+citation_overhead_tokens: 16

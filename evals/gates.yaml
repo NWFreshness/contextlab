@@ -1,0 +1,23 @@
+retrieval:
+  min_recall_at_5_hybrid: 0.70
+  min_recall_at_5_lexical: 0.80
+  min_recall_at_5_paraphrase: 0.60
+
+assembly:
+  max_budget_violations: 0
+  max_citation_errors: 0
+
+answer:
+  min_pass_rate: 0.70
+  max_forbidden_fact_hits: 0
+
+# Slice 5 — dry-run routing accuracy over evals/router_golden.jsonl.
+# Route only: the router must not be allowed to trade retrieval quality for it.
+router:
+  min_accuracy: 0.85
+
+# Slice 6 — semantic cache over evals/cache_golden.jsonl.
+# A cache that misses is acceptable; a cache that answers the wrong question is not.
+cache:
+  min_should_hit_rate: 0.80
+  max_false_hit_rate: 0.00

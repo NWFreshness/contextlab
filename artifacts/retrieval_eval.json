@@ -1,0 +1,976 @@
+{
+  "timestamp": "2026-09-14T21:15:57.970392",
+  "config": {
+    "chunk_tokens": 256,
+    "chunk_overlap_tokens": 32,
+    "encoding": "cl100k_base",
+    "bm25_top_n": 50,
+    "dense_top_n": 50,
+    "rrf_k": 60,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "hybrid_k": 5,
+    "rerank": false
+  },
+  "cases": [
+    {
+      "id": "r001",
+      "query": "E-4471",
+      "intent": "lexical",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "error_codes"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "incident_runbook::c0001",
+            "error_codes::c0002",
+            "incident_runbook::c0003",
+            "incident_runbook::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0004",
+            "incident_runbook::c0000",
+            "error_codes::c0001",
+            "error_codes::c0002",
+            "incident_runbook::c0003"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "incident_runbook::c0004",
+            "error_codes::c0002",
+            "incident_runbook::c0003",
+            "incident_runbook::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r002",
+      "query": "E-4472",
+      "intent": "lexical",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "error_codes",
+        "incident_runbook"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "incident_runbook::c0001",
+            "error_codes::c0002",
+            "incident_runbook::c0003",
+            "incident_runbook::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0004",
+            "incident_runbook::c0000",
+            "error_codes::c0002",
+            "error_codes::c0001",
+            "incident_runbook::c0003"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "error_codes::c0002",
+            "incident_runbook::c0004",
+            "incident_runbook::c0003",
+            "incident_runbook::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r003",
+      "query": "POL-REF-30",
+      "intent": "lexical",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0004",
+            "boilerplate::c0000",
+            "refund_policy_v3::c0001",
+            "incident_runbook::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0004",
+            "boilerplate::c0003",
+            "refund_policy_v3::c0001",
+            "refund_policy_v1::c0000"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0004",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001",
+            "boilerplate::c0000"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r004",
+      "query": "inventory reservation expired",
+      "intent": "lexical",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "error_codes"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "error_codes::c0002",
+            "incident_runbook::c0003",
+            "incident_runbook::c0001",
+            "error_codes::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "incident_runbook::c0001",
+            "incident_runbook::c0002",
+            "error_codes::c0002",
+            "incident_runbook::c0003"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "error_codes::c0002",
+            "incident_runbook::c0001",
+            "incident_runbook::c0003",
+            "incident_runbook::c0002"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r005",
+      "query": "E-6001",
+      "intent": "lexical",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "error_codes"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "error_codes::c0004",
+            "incident_runbook::c0000",
+            "incident_runbook::c0001",
+            "incident_runbook::c0002",
+            "shipping_sla::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "error_codes::c0004",
+            "pricing::c0000",
+            "incident_runbook::c0000",
+            "error_codes::c0003",
+            "error_codes::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "error_codes::c0004",
+            "incident_runbook::c0000",
+            "pricing::c0000",
+            "error_codes::c0003",
+            "incident_runbook::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r006",
+      "query": "how long can I send something back",
+      "intent": "paraphrase",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3",
+        "onboarding_faq"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "onboarding_faq::c0002",
+            "onboarding_faq::c0003",
+            "boilerplate::c0003"
+          ],
+          "recall@5": 0.5
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0002",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0000"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "onboarding_faq::c0002",
+            "onboarding_faq::c0003",
+            "boilerplate::c0003",
+            "refund_policy_v3::c0002"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r007",
+      "query": "what is the return window",
+      "intent": "paraphrase",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3",
+        "onboarding_faq"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0000",
+            "incident_runbook::c0001",
+            "incident_runbook::c0002",
+            "refund_policy_v1::c0000"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "error_codes::c0000",
+            "error_codes::c0003"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "incident_runbook::c0002"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r008",
+      "query": "money back guarantee timeframe",
+      "intent": "paraphrase",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "boilerplate::c0003",
+            "onboarding_faq::c0001"
+          ],
+          "recall@5": 0.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v1::c0000",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "boilerplate::c0003",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r009",
+      "query": "how long does ground shipping take to west coast",
+      "intent": "paraphrase",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "shipping_sla"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0002",
+            "shipping_sla::c0003",
+            "boilerplate::c0000",
+            "onboarding_faq::c0001",
+            "error_codes::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0002",
+            "shipping_sla::c0000",
+            "shipping_sla::c0001",
+            "shipping_sla::c0002",
+            "shipping_sla::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0002",
+            "shipping_sla::c0003",
+            "boilerplate::c0000",
+            "shipping_sla::c0004",
+            "onboarding_faq::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r010",
+      "query": "west coast delivery time",
+      "intent": "paraphrase",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "shipping_sla"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "shipping_sla::c0002",
+            "error_codes::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0002",
+            "shipping_sla::c0000",
+            "shipping_sla::c0002",
+            "shipping_sla::c0001",
+            "shipping_sla::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "shipping_sla::c0002",
+            "error_codes::c0004",
+            "onboarding_faq::c0002",
+            "shipping_sla::c0000",
+            "shipping_sla::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r011",
+      "query": "Starter plan price",
+      "intent": "table",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "pricing"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [],
+          "recall@5": 0.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "pricing::c0004",
+            "pricing::c0000",
+            "pricing::c0001",
+            "pricing::c0002",
+            "pricing::c0003"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "pricing::c0004",
+            "pricing::c0000",
+            "pricing::c0001",
+            "pricing::c0002",
+            "pricing::c0003"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r012",
+      "query": "Professional plan users",
+      "intent": "table",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "pricing"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "pricing::c0002",
+            "pricing::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "pricing::c0000",
+            "pricing::c0004",
+            "onboarding_faq::c0000",
+            "pricing::c0001",
+            "pricing::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "pricing::c0002",
+            "pricing::c0001",
+            "pricing::c0000",
+            "pricing::c0004",
+            "onboarding_faq::c0000"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r013",
+      "query": "Extra Users addon cost",
+      "intent": "table",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "pricing"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "pricing::c0003"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "pricing::c0003",
+            "pricing::c0001",
+            "pricing::c0000",
+            "pricing::c0002",
+            "pricing::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "pricing::c0003",
+            "pricing::c0001",
+            "pricing::c0000",
+            "pricing::c0002",
+            "pricing::c0004"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r014",
+      "query": "current refund policy",
+      "intent": "version",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r015",
+      "query": "newest return policy",
+      "intent": "version",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v1::c0000"
+          ],
+          "recall@5": 0.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r016",
+      "query": "old refund window",
+      "intent": "version",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v1"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0002"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r017",
+      "query": "2022 refund policy",
+      "intent": "version",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v1"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0004",
+            "refund_policy_v3::c0000",
+            "shipping_sla::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0000",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0004",
+            "refund_policy_v3::c0002"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r018",
+      "query": "does my order qualify for a refund",
+      "intent": "negative",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "refund_policy_v3"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0002",
+            "refund_policy_v3::c0001",
+            "onboarding_faq::c0003",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0001",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0001",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "onboarding_faq::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r019",
+      "query": "what happens if my card is declined",
+      "intent": "negative",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "error_codes"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0002",
+            "incident_runbook::c0001",
+            "onboarding_faq::c0003",
+            "error_codes::c0001",
+            "incident_runbook::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "error_codes::c0001",
+            "refund_policy_v3::c0002",
+            "refund_policy_v3::c0004",
+            "refund_policy_v3::c0001",
+            "refund_policy_v1::c0000"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "error_codes::c0001",
+            "incident_runbook::c0001",
+            "refund_policy_v3::c0000",
+            "onboarding_faq::c0003",
+            "onboarding_faq::c0002"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r020",
+      "query": "apple return policy",
+      "intent": "negative",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v1::c0000"
+          ],
+          "recall@5": 0.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 0.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "onboarding_faq::c0001",
+            "refund_policy_v1::c0000",
+            "refund_policy_v3::c0000",
+            "refund_policy_v3::c0001",
+            "refund_policy_v3::c0004"
+          ],
+          "recall@5": 0.0
+        }
+      }
+    },
+    {
+      "id": "r021",
+      "query": "E-4471 resolution steps",
+      "intent": "lexical",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "incident_runbook"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "incident_runbook::c0001",
+            "error_codes::c0002",
+            "incident_runbook::c0003",
+            "incident_runbook::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0004",
+            "error_codes::c0001",
+            "error_codes::c0004",
+            "incident_runbook::c0000",
+            "error_codes::c0000"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0000",
+            "incident_runbook::c0004",
+            "error_codes::c0001",
+            "error_codes::c0002",
+            "error_codes::c0004"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r022",
+      "query": "how to fix E-4471",
+      "intent": "paraphrase",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "incident_runbook"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "error_codes::c0002",
+            "incident_runbook::c0003",
+            "incident_runbook::c0004",
+            "error_codes::c0003",
+            "error_codes::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0004",
+            "incident_runbook::c0000",
+            "error_codes::c0004",
+            "error_codes::c0001",
+            "incident_runbook::c0001"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "incident_runbook::c0004",
+            "error_codes::c0002",
+            "incident_runbook::c0000",
+            "error_codes::c0004",
+            "error_codes::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r023",
+      "query": "5 business days west coast",
+      "intent": "table",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [
+        "shipping_sla"
+      ],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "shipping_sla::c0000",
+            "refund_policy_v3::c0002",
+            "onboarding_faq::c0002",
+            "shipping_sla::c0001",
+            "shipping_sla::c0004"
+          ],
+          "recall@5": 1.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "shipping_sla::c0002",
+            "shipping_sla::c0004",
+            "shipping_sla::c0000",
+            "shipping_sla::c0001",
+            "onboarding_faq::c0002"
+          ],
+          "recall@5": 1.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "shipping_sla::c0000",
+            "shipping_sla::c0002",
+            "shipping_sla::c0004",
+            "onboarding_faq::c0002",
+            "shipping_sla::c0001"
+          ],
+          "recall@5": 1.0
+        }
+      }
+    },
+    {
+      "id": "r024",
+      "query": "customer support hours",
+      "intent": "negative",
+      "relevant_chunk_ids": [],
+      "relevant_doc_ids": [],
+      "hits": {
+        "bm25": {
+          "hit_chunk_ids": [
+            "boilerplate::c0003",
+            "pricing::c0000",
+            "incident_runbook::c0004",
+            "pricing::c0002",
+            "refund_policy_v3::c0001"
+          ],
+          "recall@5": 0.0
+        },
+        "dense": {
+          "hit_chunk_ids": [
+            "shipping_sla::c0004",
+            "shipping_sla::c0002",
+            "onboarding_faq::c0000",
+            "boilerplate::c0000",
+            "refund_policy_v1::c0000"
+          ],
+          "recall@5": 0.0
+        },
+        "hybrid": {
+          "hit_chunk_ids": [
+            "refund_policy_v3::c0001",
+            "boilerplate::c0000",
+            "boilerplate::c0003",
+            "refund_policy_v1::c0000",
+            "pricing::c0000"
+          ],
+          "recall@5": 0.0
+        }
+      }
+    }
+  ],
+  "summary": {
+    "recall@5_bm25": 0.7708333333333334,
+    "recall@5_dense": 0.9166666666666666,
+    "recall@5_hybrid": 0.9166666666666666,
+    "num_cases": 24
+  }
+}

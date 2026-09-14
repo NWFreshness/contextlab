@@ -1,0 +1,44 @@
+# Slice 6 — semantic cache.
+#
+# A hit needs BOTH a similar query AND an identical settings fingerprint, and the
+# guards below must not fire. Similarity alone is how a 14-day answer gets served
+# for a 30-day question.
+enabled: true
+path: data/cache.jsonl
+
+# Cosine similarity floor for a semantic hit. Set just under the lowest same-answer
+# paraphrase measured on evals/cache_golden.jsonl (0.7945), because the bands
+# overlap: a must-miss pair (West Coast vs East Coast) sits at 0.986, above every
+# paraphrase. The guards and the fingerprint carry correctness; this number is a
+# similarity floor, not the safety mechanism. Measured margins live in progress.md
+# and are printed by the cache suite on every run.
+threshold: 0.79
+
+# null -> inherit embedding_model from config/retrieval.yaml (same stack as dense
+# retrieval: sentence-transformers + cosine).
+embedding_model: null
+
+# false would let a hit cross a different budget/mode/system/corpus — used only for
+# the recorded mutation experiment in progress.md.
+require_fingerprint: true
+
+# Normalized-query layer, checked before any embedding is computed (true repeats).
+exact_layer: true
+
+# Meaning-changing tokens. A guard firing is always a MISS, never a hit.
+guards:
+  # E-4471 must not answer a question about E-4472.
+  identifiers_must_match: true
+  # A number in the probe must appear in the seed query ("30 days" != "14 days").
+  numbers_must_match: true
+  # Mid-sentence capitalized words (West vs East Coast, Starter vs Professional
+  # plan). Measured: this pair is *more* similar (0.986) than same-answer
+  # paraphrases (0.79-0.86), so no threshold can separate them — the guard does.
+  # One-directional: only entities the probe introduces trigger it.
+  capitalized_entities_must_match: true
+  # If probe and seed use version words from *different* groups, the question is
+  # asking about a different policy version even when the wording is nearly
+  # identical. Same group, or no version word at all, is fine.
+  version_token_groups:
+    - ["old", "previous", "former", "legacy", "before", "used", "superseded", "v1"]
+    - ["current", "new", "latest", "now", "today", "v3", "updated", "live"]

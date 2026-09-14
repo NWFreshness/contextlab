@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "description": "Comfortable budget \u2014 nothing dropped",
+      "budget": 2000,
+      "prompt_tokens": 44,
+      "kept_refs": [
+        "query",
+        "system",
+        "mem_001"
+      ],
+      "dropped_refs": []
+    },
+    {
+      "description": "Tight budget \u2014 memory tail dropped",
+      "budget": 200,
+      "prompt_tokens": 18,
+      "kept_refs": [],
+      "dropped_refs": [
+        "mem_v1_old",
+        "mem_v3_new"
+      ],
+      "all_kept_refs": [
+        "query",
+        "system"
+      ],
+      "prompt": "# Instructions\nYou are a helpful assistant.\n\n# User\nWhat is the return policy?"
+    },
+    {
+      "description": "Pathological budget \u2014 only system+query fit",
+      "budget": 50,
+      "prompt_tokens": 15,
+      "kept_refs": [
+        "query",
+        "system"
+      ],
+      "dropped_refs": [
+        "mem_big"
+      ]
+    }
+  ]
+}

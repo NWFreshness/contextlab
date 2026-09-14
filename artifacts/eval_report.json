@@ -1,0 +1,3077 @@
+{
+  "started_at": "2026-09-14T22:49:30.655973+00:00",
+  "finished_at": "2026-09-14T22:50:15.489948+00:00",
+  "settings": {
+    "config": {
+      "chunk_tokens": 256,
+      "chunk_overlap_tokens": 32,
+      "encoding": "cl100k_base",
+      "bm25_top_n": 50,
+      "dense_top_n": 50,
+      "rrf_k": 60,
+      "embedding_model": "all-MiniLM-L6-v2",
+      "hybrid_k": 5,
+      "rerank": false
+    },
+    "offline": true,
+    "require_answer": false,
+    "suites_run": [
+      "retrieval",
+      "assembly",
+      "answer",
+      "router",
+      "cache"
+    ]
+  },
+  "suites": {
+    "retrieval": {
+      "n": 24,
+      "n_pass": 24,
+      "n_fail": 0,
+      "n_skip": 0,
+      "metrics": {
+        "recall@5_bm25": 0.7708333333333334,
+        "recall@5_dense": 0.9166666666666666,
+        "recall@5_hybrid": 0.9166666666666666,
+        "recall@5_lexical": 1.0,
+        "recall@5_paraphrase": 1.0,
+        "recall@5_table": 1.0,
+        "recall@5_version": 1.0,
+        "recall@5_negative": 0.5
+      }
+    },
+    "assembly": {
+      "n": 7,
+      "n_pass": 7,
+      "n_fail": 0,
+      "n_skip": 0,
+      "metrics": {}
+    },
+    "answer": {
+      "n": 14,
+      "n_pass": 13,
+      "n_fail": 1,
+      "n_skip": 14,
+      "metrics": {}
+    },
+    "router": {
+      "n": 19,
+      "n_pass": 19,
+      "n_fail": 0,
+      "n_skip": 0,
+      "metrics": {
+        "route_accuracy": 1.0,
+        "intent_accuracy": 1.0,
+        "routes_cheap": 8,
+        "routes_strong": 11,
+        "routes_fallback": 0,
+        "cases_with_retrieval": 2
+      }
+    },
+    "cache": {
+      "n": 14,
+      "n_pass": 13,
+      "n_fail": 1,
+      "n_skip": 0,
+      "metrics": {
+        "should_hit_rate": 0.875,
+        "false_hit_rate": 0.0,
+        "n_should_hit": 8,
+        "n_must_miss": 6,
+        "min_hit_score": 0.794514148472437,
+        "max_miss_score": 0.9860262680601093,
+        "threshold": 0.79,
+        "require_fingerprint": true,
+        "reasons": {
+          "semantic": 5,
+          "exact": 2,
+          "guard:version_conflict": 1,
+          "guard:identifier_mismatch": 1,
+          "guard:entity_mismatch": 2,
+          "fingerprint_mismatch": 2,
+          "miss": 1
+        }
+      }
+    }
+  },
+  "gates": [
+    {
+      "name": "gate_retrieval_hybrid",
+      "passed": true,
+      "detail": "recall@5_hybrid=0.917 >= 0.7 => PASS",
+      "score": 0.9166666666666666
+    },
+    {
+      "name": "gate_retrieval_lexical",
+      "passed": true,
+      "detail": "recall@5_lexical=1.000 >= 0.8 => PASS",
+      "score": 1.0
+    },
+    {
+      "name": "gate_retrieval_paraphrase",
+      "passed": true,
+      "detail": "recall@5_paraphrase=1.000 >= 0.6 => PASS",
+      "score": 1.0
+    },
+    {
+      "name": "gate_assembly_budget",
+      "passed": true,
+      "detail": "budget violations=0 <= max=0",
+      "score": 1.0
+    },
+    {
+      "name": "gate_assembly_citations",
+      "passed": true,
+      "detail": "citation errors=0 <= max=0",
+      "score": 1.0
+    },
+    {
+      "name": "gate_answer_pass_rate",
+      "passed": true,
+      "detail": "pass_rate=0.93 >= 0.7",
+      "score": 0.9285714285714286
+    },
+    {
+      "name": "gate_answer_forbidden",
+      "passed": true,
+      "detail": "forbidden_fact_hits=0 <= max=0",
+      "score": 1.0
+    },
+    {
+      "name": "gate_router_accuracy",
+      "passed": true,
+      "detail": "route_accuracy=1.000 >= 0.85",
+      "score": 1.0
+    },
+    {
+      "name": "gate_cache_should_hit",
+      "passed": true,
+      "detail": "should_hit_rate=0.875 >= 0.8",
+      "score": 0.875
+    },
+    {
+      "name": "gate_cache_false_hit",
+      "passed": true,
+      "detail": "false_hit_rate=0.000 <= 0.0",
+      "score": 0.0
+    }
+  ],
+  "cases": [
+    {
+      "id": "r001",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "incident_runbook::c0000",
+        "incident_runbook::c0004",
+        "error_codes::c0002",
+        "incident_runbook::c0003",
+        "incident_runbook::c0001"
+      ],
+      "cited_ids": [
+        "incident_runbook::c0000",
+        "incident_runbook::c0004",
+        "error_codes::c0002",
+        "incident_runbook::c0003",
+        "incident_runbook::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 6.186448008520529,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "23901c379768727ab607a5df7a1ed83d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r002",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "incident_runbook::c0000",
+        "error_codes::c0002",
+        "incident_runbook::c0004",
+        "incident_runbook::c0003",
+        "incident_runbook::c0001"
+      ],
+      "cited_ids": [
+        "incident_runbook::c0000",
+        "error_codes::c0002",
+        "incident_runbook::c0004",
+        "incident_runbook::c0003",
+        "incident_runbook::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.480944993905723,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "689e6a9e236e4be8093f23650c6ed699",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r003",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0004",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0001",
+        "boilerplate::c0000"
+      ],
+      "cited_ids": [
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0004",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0001",
+        "boilerplate::c0000"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.500789993675426,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "799d25b3cf5c71a5179b12b70aec740b",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r004",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "incident_runbook::c0000",
+        "error_codes::c0002",
+        "incident_runbook::c0001",
+        "incident_runbook::c0003",
+        "incident_runbook::c0002"
+      ],
+      "cited_ids": [
+        "incident_runbook::c0000",
+        "error_codes::c0002",
+        "incident_runbook::c0001",
+        "incident_runbook::c0003",
+        "incident_runbook::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.51752200408373,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "a20dc467d1b70e1f6e7a3ed6be95ca9a",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r005",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "error_codes::c0004",
+        "incident_runbook::c0000",
+        "pricing::c0000",
+        "error_codes::c0003",
+        "incident_runbook::c0001"
+      ],
+      "cited_ids": [
+        "error_codes::c0004",
+        "incident_runbook::c0000",
+        "pricing::c0000",
+        "error_codes::c0003",
+        "incident_runbook::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.534636991797015,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "b0643412eb0d2b7c4a008662ae3dc102",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r006",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "onboarding_faq::c0001",
+        "onboarding_faq::c0002",
+        "onboarding_faq::c0003",
+        "boilerplate::c0003",
+        "refund_policy_v3::c0002"
+      ],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "onboarding_faq::c0002",
+        "onboarding_faq::c0003",
+        "boilerplate::c0003",
+        "refund_policy_v3::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.9057659964310005,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "a65bfe3ef19341ad4f0795421c703a27",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r007",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0000",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0001",
+        "incident_runbook::c0002"
+      ],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0000",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0001",
+        "incident_runbook::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.659007001668215,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "08228cc0c448be9b4049e5b795c58733",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r008",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "onboarding_faq::c0001",
+        "boilerplate::c0003",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001"
+      ],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "boilerplate::c0003",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.610337000689469,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "d7cdd43c18b216194b083381be8ff697",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r009",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "onboarding_faq::c0002",
+        "shipping_sla::c0003",
+        "boilerplate::c0000",
+        "shipping_sla::c0004",
+        "onboarding_faq::c0001"
+      ],
+      "cited_ids": [
+        "onboarding_faq::c0002",
+        "shipping_sla::c0003",
+        "boilerplate::c0000",
+        "shipping_sla::c0004",
+        "onboarding_faq::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 6.9990199990570545,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "f4e96af23d58b2bdcbb0cc009d7acad4",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r010",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "shipping_sla::c0002",
+        "error_codes::c0004",
+        "onboarding_faq::c0002",
+        "shipping_sla::c0000",
+        "shipping_sla::c0001"
+      ],
+      "cited_ids": [
+        "shipping_sla::c0002",
+        "error_codes::c0004",
+        "onboarding_faq::c0002",
+        "shipping_sla::c0000",
+        "shipping_sla::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.386531993281096,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "6ca4d042aaabe558a78d614aa9d2e9bb",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r011",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "pricing::c0004",
+        "pricing::c0000",
+        "pricing::c0001",
+        "pricing::c0002",
+        "pricing::c0003"
+      ],
+      "cited_ids": [
+        "pricing::c0004",
+        "pricing::c0000",
+        "pricing::c0001",
+        "pricing::c0002",
+        "pricing::c0003"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.294960996252485,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "6b22c4589592185a2b5c9110edef76aa",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r012",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "pricing::c0002",
+        "pricing::c0001",
+        "pricing::c0000",
+        "pricing::c0004",
+        "onboarding_faq::c0000"
+      ],
+      "cited_ids": [
+        "pricing::c0002",
+        "pricing::c0001",
+        "pricing::c0000",
+        "pricing::c0004",
+        "onboarding_faq::c0000"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.355009998311289,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "958583016bd1dc2f3a9b1ab63e08ec88",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r013",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "pricing::c0003",
+        "pricing::c0001",
+        "pricing::c0000",
+        "pricing::c0002",
+        "pricing::c0004"
+      ],
+      "cited_ids": [
+        "pricing::c0003",
+        "pricing::c0001",
+        "pricing::c0000",
+        "pricing::c0002",
+        "pricing::c0004"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.49045299703721,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "e0080079ed59cc2b4d2ff9065e74ce02",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r014",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "cited_ids": [
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.443131987703964,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "ec36fca8d68bcbdf52c46e676990dd19",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r015",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.312174005666748,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "5f8c965bf0d9e33ffc59f76598a1208a",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r016",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "refund_policy_v3::c0000",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0002"
+      ],
+      "cited_ids": [
+        "refund_policy_v3::c0000",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.33808401087299,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "6a370d2482397497ff5c2a926088f632",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r017",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004",
+        "refund_policy_v3::c0002"
+      ],
+      "cited_ids": [
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004",
+        "refund_policy_v3::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.561995989410207,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "61f87dd161679eba74638e47167a4af7",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r018",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "refund_policy_v3::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "cited_ids": [
+        "refund_policy_v3::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.865308005013503,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "e4fcc4f23e75d8fd8a0e20bb2498f57a",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r019",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "error_codes::c0001",
+        "incident_runbook::c0001",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0003",
+        "onboarding_faq::c0002"
+      ],
+      "cited_ids": [
+        "error_codes::c0001",
+        "incident_runbook::c0001",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0003",
+        "onboarding_faq::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.431468001916073,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "b982f1976007177c79a36817ed70fd6a",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r020",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=0.000",
+          "score": 0.0
+        }
+      ],
+      "retrieved_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.216976001975127,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "60ce0b7c9b874fdb005824cee7d0a83d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r021",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "incident_runbook::c0000",
+        "incident_runbook::c0004",
+        "error_codes::c0001",
+        "error_codes::c0002",
+        "error_codes::c0004"
+      ],
+      "cited_ids": [
+        "incident_runbook::c0000",
+        "incident_runbook::c0004",
+        "error_codes::c0001",
+        "error_codes::c0002",
+        "error_codes::c0004"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.45893500384409,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "fb0daf26f22141f286d9b5aee2d7c53d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r022",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "incident_runbook::c0004",
+        "error_codes::c0002",
+        "incident_runbook::c0000",
+        "error_codes::c0004",
+        "error_codes::c0001"
+      ],
+      "cited_ids": [
+        "incident_runbook::c0004",
+        "error_codes::c0002",
+        "incident_runbook::c0000",
+        "error_codes::c0004",
+        "error_codes::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.842140992172062,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "d1972962700345e05e60d5a6c05b6746",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r023",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=1.000",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [
+        "shipping_sla::c0000",
+        "shipping_sla::c0002",
+        "shipping_sla::c0004",
+        "onboarding_faq::c0002",
+        "shipping_sla::c0001"
+      ],
+      "cited_ids": [
+        "shipping_sla::c0000",
+        "shipping_sla::c0002",
+        "shipping_sla::c0004",
+        "onboarding_faq::c0002",
+        "shipping_sla::c0001"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.608634994132444,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "290739b90bb62e879f3b82a1afc93fb3",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "r024",
+      "suite": "retrieval",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citations_exist",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "recall_at_5",
+          "passed": true,
+          "detail": "recall@5=0.000",
+          "score": 0.0
+        }
+      ],
+      "retrieved_ids": [
+        "refund_policy_v3::c0001",
+        "boilerplate::c0000",
+        "boilerplate::c0003",
+        "refund_policy_v1::c0000",
+        "pricing::c0000"
+      ],
+      "cited_ids": [
+        "refund_policy_v3::c0001",
+        "boilerplate::c0000",
+        "boilerplate::c0003",
+        "refund_policy_v1::c0000",
+        "pricing::c0000"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 5.3517640044447035,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "d3452c8855e391477d800232ca52ea37",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a001",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=20 <= budget=800",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 0.6904820038471371,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "41721c90f6b22e9801c859535dae52dc",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a002",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=31 <= budget=800",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "mem_001"
+      ],
+      "prompt_tokens": 31,
+      "latency_ms": 0.7276640099007636,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "d813996c5900b6abd6662177fae77e79",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a003",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=62 <= budget=250",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "mem_old",
+        "mem_new"
+      ],
+      "prompt_tokens": 62,
+      "latency_ms": 0.6202899967320263,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "5762c39b0cf067373e30ca1f91bca4db",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a004",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=41 <= budget=200",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 41,
+      "latency_ms": 0.6041209999239072,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "7389a1b178c5455856f6af82a9b3ab7b",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a005",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=21 <= budget=50",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 21,
+      "latency_ms": 0.5500809929799289,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "5532f0f58088c487a4424b9ca3fee17d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a006",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=20 <= budget=800",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        },
+        {
+          "name": "negative_retrieval",
+          "passed": true,
+          "detail": "No retrieval for negative case",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 0.5428409931482747,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "316ea014b4bd7fca5a0bb4a73b29f45b",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "a007",
+      "suite": "assembly",
+      "passed": true,
+      "checks": [
+        {
+          "name": "under_budget",
+          "passed": true,
+          "detail": "prompt_tokens=70 <= budget=600",
+          "score": 1.0
+        },
+        {
+          "name": "query_kept",
+          "passed": true,
+          "detail": "query present",
+          "score": null
+        },
+        {
+          "name": "system_kept",
+          "passed": true,
+          "detail": "system prompt present",
+          "score": null
+        },
+        {
+          "name": "citations_resolve",
+          "passed": true,
+          "detail": "All citations valid",
+          "score": null
+        },
+        {
+          "name": "no_dropped_cited",
+          "passed": true,
+          "detail": "No dropped refs in prompt",
+          "score": null
+        },
+        {
+          "name": "no_empty_keep",
+          "passed": true,
+          "detail": "All kept blocks non-empty",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "mem_v1",
+        "mem_v3"
+      ],
+      "prompt_tokens": 70,
+      "latency_ms": 0.602199012064375,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "b0591e66f8939acca131fdf017f73148",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans001",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['error_codes::c0001', 'incident_runbook::c0000']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "incident_runbook::c0004",
+        "error_codes::c0001",
+        "error_codes::c0002",
+        "incident_runbook::c0000",
+        "error_codes::c0003"
+      ],
+      "prompt_tokens": 284,
+      "latency_ms": 2461.5256800025236,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "b9d09cc8c645b67bc27c8b63a583df70",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans002",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['refund_policy_v3::c0000']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0001",
+        "onboarding_faq::c0003"
+      ],
+      "prompt_tokens": 337,
+      "latency_ms": 2465.1387500052806,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "2f1e2f698c15f11e3217154a01436c9d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans003",
+      "suite": "answer",
+      "passed": false,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": false,
+          "detail": "None of ['pricing::c0000'] in ['onboarding_faq::c0003', 'incident_runbook::c0001', 'onboarding_faq::c0002', 'refund_policy_v3::c0001', 'refund_policy_v1::c0000']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0003",
+        "incident_runbook::c0001",
+        "onboarding_faq::c0002",
+        "refund_policy_v3::c0001",
+        "refund_policy_v1::c0000"
+      ],
+      "prompt_tokens": 353,
+      "latency_ms": 2595.64564799075,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "d454b9f376b5a6edaa37a6a9744e3fc0",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans004",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['pricing::c0002']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "pricing::c0002",
+        "pricing::c0001",
+        "onboarding_faq::c0003",
+        "onboarding_faq::c0001",
+        "incident_runbook::c0001"
+      ],
+      "prompt_tokens": 329,
+      "latency_ms": 2437.354352994589,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "107825e07d094b2899eac43b6c067e98",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans005",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['pricing::c0003']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "pricing::c0003",
+        "onboarding_faq::c0001",
+        "onboarding_faq::c0003",
+        "onboarding_faq::c0002",
+        "boilerplate::c0003"
+      ],
+      "prompt_tokens": 340,
+      "latency_ms": 2440.5317829950945,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "caf34bacd069de9ac86211cbd89d4111",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans006",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['shipping_sla::c0001']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0002",
+        "shipping_sla::c0000",
+        "shipping_sla::c0001",
+        "onboarding_faq::c0001",
+        "shipping_sla::c0003"
+      ],
+      "prompt_tokens": 328,
+      "latency_ms": 2506.0648509970633,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "33b7f8dcb7e4a61d3db65495d9203a29",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans007",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['refund_policy_v1::c0000']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0001",
+        "incident_runbook::c0001"
+      ],
+      "prompt_tokens": 327,
+      "latency_ms": 2434.7851469938178,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "616235584ec07910477c8a763911696d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans008",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['error_codes::c0001']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "incident_runbook::c0004",
+        "error_codes::c0002",
+        "incident_runbook::c0003",
+        "error_codes::c0001",
+        "error_codes::c0003"
+      ],
+      "prompt_tokens": 307,
+      "latency_ms": 2474.5859270042274,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "4d864a16812a3712a3f5b5183956898d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans009",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['boilerplate::c0003']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004",
+        "boilerplate::c0003",
+        "incident_runbook::c0002",
+        "refund_policy_v1::c0000"
+      ],
+      "prompt_tokens": 320,
+      "latency_ms": 2407.428348000394,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "ac9a41b6618bb6f1582de66849caa583",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans010",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "No expected citations",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "incident_runbook::c0002",
+        "refund_policy_v3::c0002",
+        "shipping_sla::c0002",
+        "refund_policy_v3::c0001"
+      ],
+      "prompt_tokens": 296,
+      "latency_ms": 2481.8197029962903,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "dae62cd05ac83176b81348271a5dcb32",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans011",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "No expected citations",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "error_codes::c0001",
+        "incident_runbook::c0001",
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0000",
+        "onboarding_faq::c0003"
+      ],
+      "prompt_tokens": 327,
+      "latency_ms": 2408.209822009667,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "b2e8bb0120bebf30a36bfc0fa05ec695",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans012",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "No expected citations",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "pricing::c0004",
+        "onboarding_faq::c0003",
+        "incident_runbook::c0001",
+        "shipping_sla::c0002",
+        "boilerplate::c0001"
+      ],
+      "prompt_tokens": 289,
+      "latency_ms": 2445.995481990394,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "c9887f833dd52cdc6a0a07409d0a3a62",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans013",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['error_codes::c0003']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "error_codes::c0004",
+        "error_codes::c0001",
+        "error_codes::c0003",
+        "incident_runbook::c0004",
+        "onboarding_faq::c0003"
+      ],
+      "prompt_tokens": 323,
+      "latency_ms": 2436.393683994538,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "f73cb26569342d4646c018f73a378523",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "ans014",
+      "suite": "answer",
+      "passed": true,
+      "checks": [
+        {
+          "name": "citation_support",
+          "passed": true,
+          "detail": "Found ['boilerplate::c0003']",
+          "score": null
+        },
+        {
+          "name": "required_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "forbidden_facts",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        },
+        {
+          "name": "refusal_on_missing",
+          "passed": true,
+          "detail": "skipped_no_output",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004",
+        "boilerplate::c0003",
+        "error_codes::c0004",
+        "refund_policy_v1::c0000"
+      ],
+      "prompt_tokens": 331,
+      "latency_ms": 2436.5247710084077,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "e0357b0fe10dfc007334c0570ca8d319",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "rte001",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[2] has_identifier=true -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=lexical signals=lexical",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 3.2844829984242097,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "48f39905ea34384e5edb6e38598f937f",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte002",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[2] has_identifier=true -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=lexical signals=lexical",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 0.779943002271466,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "ffdd0ee96986d0e6a1bd7bee7a6a21c1",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte003",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[2] has_identifier=true -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=lexical signals=lexical",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 0.6671139999525622,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "1a526206fb7ee135ca5e0e524e281d88",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte004",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[2] has_identifier=true -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=lexical signals=lexical",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 0.6542720075231045,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "0acc1e54dafa2dd42877630b97b251f1",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte005",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[2] has_identifier=true -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=paraphrase signals=paraphrase",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 21,
+      "latency_ms": 0.6594540027435869,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "d5b0833476c3d3bec43a681b516f5ea2",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte006",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=version -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=version signals=version",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 22,
+      "latency_ms": 0.6119469908298925,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "a60b896f1a57cc428d89f5696ab8a5e3",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte007",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=version -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=version signals=version",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 19,
+      "latency_ms": 0.5831390008097515,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "ee978c648792434527ebfc049ea25775",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte008",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=version -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=version signals=version",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 18,
+      "latency_ms": 0.6112400005804375,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "6a4ecaf2d313137e372b9b08092d6422",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte009",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=table -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=table signals=table",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 21,
+      "latency_ms": 0.6170139968162403,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "779106dc6886481d6d649612db380bd2",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte010",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=table -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=table signals=table",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 21,
+      "latency_ms": 0.6190199928823858,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "85f6a0972abcff2388a2ce03b1a9b296",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte011",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[3] intent_hint=paraphrase -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=paraphrase signals=paraphrase",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 24,
+      "latency_ms": 0.5948649923084304,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "4e26a7d4b8f6f33ccfd7184232ecfe50",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte012",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[3] intent_hint=paraphrase -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=paraphrase signals=paraphrase",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 25,
+      "latency_ms": 0.6260730006033555,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "e254f008242737c81f3b6ff126ddd488",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte013",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[1] intent_hint=negative -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=negative signals=negative",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 20,
+      "latency_ms": 0.5613609973806888,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "dd90538cb72776a80fbc8cf38f515679",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte014",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (rule[1] intent_hint=negative -> cheap)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=negative signals=negative",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 18,
+      "latency_ms": 0.5307229876052588,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "68bd69f0ba15b6b78d788fd6deab4f8c",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte015",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] conflict=true -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=other signals=other",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "boilerplate::c0003",
+        "onboarding_faq::c0002",
+        "boilerplate::c0000",
+        "refund_policy_v3::c0001",
+        "boilerplate::c0001",
+        "mem_sla_old"
+      ],
+      "prompt_tokens": 324,
+      "latency_ms": 2581.447582007968,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "1161fbcf52f1fd28b332b9f9c3f133a4",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte016",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] conflict=true -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=paraphrase signals=paraphrase",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v3::c0000",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0001",
+        "boilerplate::c0000",
+        "mem_v1",
+        "mem_v3"
+      ],
+      "prompt_tokens": 372,
+      "latency_ms": 2458.320959005505,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "73700ff8973c2f0dfe2645f8be3072e8",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte017",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=table -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=table signals=table",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 17,
+      "latency_ms": 0.7348899962380528,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "72080d477232c01eec07bc515271cf85",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "rte018",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=cheap got=cheap (default_route=cheap (no rule matched intent_hint=other))",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=other signals=other",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 19,
+      "latency_ms": 0.9806489979382604,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "6f97e388ccc5b63691f7c2cefc2999c0",
+      "route": "cheap",
+      "model": "gpt-4o-mini"
+    },
+    {
+      "id": "rte019",
+      "suite": "router",
+      "passed": true,
+      "checks": [
+        {
+          "name": "route_match",
+          "passed": true,
+          "detail": "expected=strong got=strong (rule[0] intent_hint=version -> strong)",
+          "score": 1.0
+        },
+        {
+          "name": "intent_label",
+          "passed": true,
+          "detail": "label=version signals=version",
+          "score": 1.0
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 23,
+      "latency_ms": 0.6593620055355132,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "5fb5a38a8fc8864b1a99f00bf88797ff",
+      "route": "strong",
+      "model": "PLACEHOLDER_STRONG_MODEL"
+    },
+    {
+      "id": "c001",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=semantic score=0.7945 :: cosine 0.7945 >= 0.79",
+          "score": 0.794514148472437
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 2018.2299590087496,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "9e168510bcabc2a31b02d1b851c7ea58",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c002",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=semantic score=0.7999 :: cosine 0.7999 >= 0.79",
+          "score": 0.7999148823910496
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.660376003826968,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "517e149cec1b4793d9cebb432b693903",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c003",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=semantic score=0.8235 :: cosine 0.8235 >= 0.79",
+          "score": 0.8235133970660609
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.44151700322982,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "b255bb2926a47c6e464e254a5d2ef059",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c004",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=semantic score=0.8405 :: cosine 0.8405 >= 0.79",
+          "score": 0.8404929579247292
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 12.39178900141269,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "fc93098ab5f2e1b6ad231cd9f2d3849a",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c005",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=semantic score=0.8636 :: cosine 0.8636 >= 0.79",
+          "score": 0.8636035597471862
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 12.150951006333344,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "5ed81a6ce45a4e5853e5c84b67e2b543",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c006",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=exact score=- :: normalized query match",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 7.726459996774793,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "bfd6c2310d8b2e026bda4144a697c8c8",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c007",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": true,
+          "detail": "hit reason=exact score=- :: normalized query match",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 5.883379009901546,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "fd9fed83e9f16a9c3e6277f50b88c2f1",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c008",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "must_miss",
+          "passed": true,
+          "detail": "miss reason=guard:version_conflict score=0.7332 :: similar to 40137191522f2ae8 ('What is the current refund window?') but the guard fired",
+          "score": 0.7332402698506326
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.76621300005354,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "0e2bb1b0b2527e9fc733b4b31e5da53b",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c009",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "must_miss",
+          "passed": true,
+          "detail": "miss reason=guard:identifier_mismatch e-4472 score=0.9633 :: similar to 0fd87f99c98f393f ('What does E-4471 mean?') but the guard fired",
+          "score": 0.9633056604030362
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.523499990697019,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "74231eda1e36326d5a2702a557f1740d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c010",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "must_miss",
+          "passed": true,
+          "detail": "miss reason=guard:entity_mismatch east score=0.9860 :: similar to 2356557d802f88ec ('What is the SLA for ground shipping to the West Coast?') but the guard fired",
+          "score": 0.9860262680601093
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 14.332584993098862,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "7b4e0e6c2050032247d74e4fdfb028e8",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c011",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "must_miss",
+          "passed": true,
+          "detail": "miss reason=fingerprint_mismatch score=- :: identical text but fingerprint differs on retrieve_mode",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.082792997010984,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "8790cd1f9d1f9d1a38ac6ac352d07efb",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c012",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "must_miss",
+          "passed": true,
+          "detail": "miss reason=fingerprint_mismatch score=- :: identical text but fingerprint differs on budget_tokens",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 11.678416005452164,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "06b4b3ea1b1fd514fccccee24fbe9af1",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c013",
+      "suite": "cache",
+      "passed": false,
+      "checks": [
+        {
+          "name": "should_hit",
+          "passed": false,
+          "detail": "miss reason=miss score=0.5406 :: best cosine 0.5406 < 0.79",
+          "score": 0.5406169426818189
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.712540996493772,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "3c95ac9f67032c60d52306eb06a946d5",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "c014",
+      "suite": "cache",
+      "passed": true,
+      "checks": [
+        {
+          "name": "must_miss",
+          "passed": true,
+          "detail": "miss reason=guard:entity_mismatch professional score=0.6556 :: similar to 6f38f59ba00b2d1d ('How much does the Starter plan cost?') but the guard fired",
+          "score": 0.6555719541463411
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 13.315896998392418,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "6d6c581656678ddd6cb27af269780303",
+      "route": null,
+      "model": null
+    }
+  ],
+  "passed": true
+}

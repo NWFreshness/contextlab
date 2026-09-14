@@ -1,0 +1,97 @@
+# Slice 5 — model router policy.
+#
+# The router picks cheap | strong | fallback from cheap, printable signals
+# (intent + identifiers + assemble metadata). No LLM in the decision path, so a
+# decision can be printed, diffed and unit-tested with no network.
+#
+# The decision is emitted as the span `router.decide` on the Slice 4 tracer.
+policy: rules            # rules (shipped) | llm (NOT implemented in Slice 5 — fails loud)
+default_route: cheap     # used when no rule matches
+
+models:
+  cheap: "gpt-4o-mini"                    # already the model Slice 3 generate used
+  strong: "PLACEHOLDER_STRONG_MODEL"      # edit me: the stronger model you actually pay for
+  fallback: "PLACEHOLDER_FALLBACK_MODEL"  # edit me: retried once when the primary raises
+
+# USD per 1M tokens. null = unknown -> cost_usd_estimate is omitted from spans
+# and reports (never written as 0.0, which would look measured).
+# A number is a flat rate for input+output; a dict splits them:
+#   gpt-4o-mini: {input: 0.15, output: 0.60}
+prices_usd_per_1m:
+  gpt-4o-mini: null
+  PLACEHOLDER_STRONG_MODEL: null
+  PLACEHOLDER_FALLBACK_MODEL: null
+
+# intent_hint keywords. `order` is the precedence: first intent whose keyword
+# list hits wins. negative is first on purpose — an unanswerable question should
+# not buy a strong model. Matching is case-insensitive and word-bounded
+# ("rate" does not match "corporate").
+intents:
+  order: [negative, version, table, paraphrase]
+  negative:
+    - "out of scope"
+    - "not in the docs"
+    - "no information"
+    - "unrelated"
+    - "weather"
+    - "recipe"
+    - "joke"
+    - "translate"
+    - "capital of"
+    - "stock price"
+    - "who won"
+    - "ceo of"
+  version:
+    - "old"
+    - "previous"
+    - "before we changed"
+    - "changed"
+    - "used to"
+    - "former"
+    - "legacy"
+    - "superseded"
+    - "current"
+    - "v1"
+    - "v3"
+  table:
+    - "sla"
+    - "table"
+    - "how many"
+    - "how much"
+    - "cost"
+    - "price"
+    - "pricing"
+    - "limit"
+    - "uptime"
+    - "percentage"
+    - "rate"
+    - "tier"
+    - "addon"
+    - "per month"
+  paraphrase:
+    - "how do i"
+    - "how long"
+    - "what does it mean"
+    - "send this back"
+    - "send something back"
+    - "return"
+    - "refund"
+    - "resolve"
+    - "fix"
+
+# Evaluated in order; first match wins. Keys inside `when` are ANDed, except
+# or_conflict, which is an OR alternative for that rule (version/table OR a
+# memory-vs-retrieval conflict). Supported keys: intent_hint, has_identifier,
+# or_conflict. Anything else is a config error, not a silently dead rule.
+rules:
+  - when: {intent_hint: [version, table], or_conflict: true}
+    route: strong
+  - when: {intent_hint: [negative]}
+    route: cheap
+  - when: {has_identifier: true}
+    route: cheap
+  - when: {intent_hint: [paraphrase]}
+    route: strong
+
+# Retry once with models.fallback when the primary model raises.
+fallback_on_error: true
