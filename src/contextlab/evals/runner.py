@@ -8,7 +8,7 @@ import yaml
 
 from contextlab.evals.types import CaseResult, CheckResult, EvalReport, SuiteMetrics
 from contextlab.evals.report import format_summary, write_latest, write_timestamped
-from contextlab.evals import suites_retrieval, suites_assembly, suites_answer, suites_router, suites_cache
+from contextlab.evals import suites_retrieval, suites_assembly, suites_answer, suites_router, suites_cache, suites_trajectory
 from contextlab.config import get_config
 
 
@@ -129,6 +129,38 @@ def apply_gates(suites_results: dict[str, tuple[list[CaseResult], SuiteMetrics]]
                     score=actual,
                 ))
 
+        elif suite_name == "trajectory":
+            # Slice 9 — three gates:
+            #   - min_pass_rate:        over all non-skipped cases
+            #   - max_step_cap_violations: a cap violation means the
+            #       orchestrator or a fixture is leaking past the cap.
+            #   - max_unknown_tool_on_happy_path: zero tolerance — happy
+            #       cases must never accidentally invoke an unregistered
+            #       tool (a fixture like t010 owns that signal).
+            if gate_config.get("min_pass_rate") is not None:
+                threshold = float(gate_config["min_pass_rate"])
+                actual = float(metrics.metrics.get("pass_rate", 0.0))
+                gate_results.append(CheckResult(
+                    name="gate_trajectory_pass_rate",
+                    passed=actual >= threshold,
+                    detail=f"pass_rate={actual:.3f} >= {threshold}",
+                    score=actual,
+                ))
+            cap_violations = int(metrics.metrics.get("step_cap_violations", 0))
+            cap_max = int(gate_config.get("max_step_cap_violations", 0))
+            gate_results.append(CheckResult(
+                name="gate_trajectory_step_caps",
+                passed=cap_violations <= cap_max,
+                detail=f"step_cap_violations={cap_violations} <= max={cap_max}",
+            ))
+            unknown_tool = int(metrics.metrics.get("unknown_tool_on_happy_path", 0))
+            unknown_max = int(gate_config.get("max_unknown_tool_on_happy_path", 0))
+            gate_results.append(CheckResult(
+                name="gate_trajectory_unknown_tool_happy",
+                passed=unknown_tool <= unknown_max,
+                detail=f"unknown_tool_on_happy_path={unknown_tool} <= max={unknown_max}",
+            ))
+
     return gate_results
 
 
@@ -154,6 +186,12 @@ def run_suites(suite_names: list[str], offline: bool, require_answer: bool) -> d
             # The cache suite is offline by construction: golden fixtures, no LLM.
             print("Running cache suite (seeded from goldens)...", flush=True)
             results["cache"] = suites_cache.run_suite()
+        elif name == "trajectory":
+            # Slice 9 — trajectory suite. Always uses the orchestrator
+            # (real sandbox + tracer). `offline=True` is the verified
+            # default; only cases with `needs_llm: true` skip.
+            print("Running trajectory suite (script driver, offline)...", flush=True)
+            results["trajectory"] = suites_trajectory.run_suite(offline=offline)
         elif name == "all":
             print("Running retrieval suite...", flush=True)
             results["retrieval"] = suites_retrieval.run_suite()
@@ -165,6 +203,8 @@ def run_suites(suite_names: list[str], offline: bool, require_answer: bool) -> d
             results["router"] = suites_router.run_suite()
             print("Running cache suite (seeded from goldens)...", flush=True)
             results["cache"] = suites_cache.run_suite()
+            print("Running trajectory suite (script driver, offline)...", flush=True)
+            results["trajectory"] = suites_trajectory.run_suite(offline=offline)
 
     return results
 
@@ -172,7 +212,9 @@ def run_suites(suite_names: list[str], offline: bool, require_answer: bool) -> d
 def cmd_run(args: argparse.Namespace) -> int:
     """Main eval runner command. Returns exit code."""
     suites_to_run = (
-        ["retrieval", "assembly", "answer", "router", "cache"] if args.suite == "all" else [args.suite]
+        ["retrieval", "assembly", "answer", "router", "cache", "trajectory"]
+        if args.suite == "all"
+        else [args.suite]
     )
     offline = args.offline
     require_answer = args.require_answer
@@ -240,7 +282,11 @@ def cmd_run(args: argparse.Namespace) -> int:
 def add_run_command(subparsers) -> None:
     """Add the run subcommand to an argparse parser."""
     p = subparsers.add_parser("run", help="Run eval suite(s)")
-    p.add_argument("--suite", default="all", choices=["retrieval", "assembly", "answer", "router", "cache", "all"])
+    p.add_argument(
+        "--suite",
+        default="all",
+        choices=["retrieval", "assembly", "answer", "router", "cache", "trajectory", "all"],
+    )
     p.add_argument("--offline", action="store_true", help="Skip LLM generation in answer suite")
     p.add_argument("--require-answer", action="store_true", help="Fail if answer suite cannot run")
     p.set_defaults(func=cmd_run)

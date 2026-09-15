@@ -9,6 +9,7 @@
 - **Slice 6 (done)**: Semantic cache — similarity + settings fingerprint + meaning guards, hit/false-hit gates
 - **Slice 7 (done)**: Bounded agent orchestrator — `for step in range(max_steps)`, scripted + llm drivers, `orch.run`/`orch.step` spans, trajectory JSON per run
 - **Slice 8 (done)**: Sandboxed tool executor — policy gate (allowlist, schema, path jail, env allowlist), `python_calc` AST eval in subprocess, wall-clock timeout, `tool.exec` spans, `prlimit` opt-in
+- **Slice 9 (done)**: Trajectory eval suite — constraint graders over `Trajectory` (stop reason, step cap, tools, citations, observations), `evals/trajectory_golden.jsonl` (t001–t012), gates in `evals/gates.yaml`
 
 ## Run / Verify
 ```bash
@@ -53,8 +54,13 @@ python -m contextlab.orch run --query "what is 2*(3+4)" --driver script   # pyth
 python -m contextlab.orch run --query "what does E-4471 mean" --driver script  # retrieve + read_chunk
 python -m contextlab.trace show --last   # orch.run / orch.step / tool.exec tree
 
-# Root verify (--suite all runs retrieval, assembly, answer, router, cache)
-pytest -q && python -m contextlab.evals run --suite all --offline && python -m contextlab.trace show --last
+# Slice 9 — trajectory evals
+pytest tests/test_traj_evals.py -q
+python -m contextlab.evals run --suite trajectory --offline
+python -m contextlab.trace show --case t001
+
+# Root verify (--suite all runs retrieval, assembly, answer, router, cache, trajectory)
+pytest -q && python -m contextlab.evals run --suite all --offline
 ```
 
 ## Features (feature_list.json)
@@ -66,6 +72,7 @@ Router: feat-m1 … feat-m5 (done)
 Cache: feat-c1 … feat-c5 (done)
 Orchestrator: feat-o1 … feat-o5 (done)
 Sandbox: feat-s1 … feat-s5 (done)
+Trajectory evals: feat-j1 … feat-j5 (done)
 
 ## Hard Bans
 - No LangChain / LlamaIndex / Haystack
@@ -92,3 +99,7 @@ Sandbox: feat-s1 … feat-s5 (done)
 - No inheriting the parent env wholesale — `env_allowlist` in `config/sandbox.yaml` is the only env a child sees
 - No Docker / required external runtime — Slice 8's subprocess backend must work without it; `prlimit` is opt-in
 - No disabling the timeout to make a test pass (Slice 8 hard ban)
+- No exact-step-dump goldens for the trajectory suite — constraint grading only (Slice 9)
+- No LLM judge on tool order / step lists — graders are deterministic (Slice 9)
+- Do not tune `evals/trajectory_golden.jsonl` to hide the recorded mutation (Slice 9)
+- Do not mark Slice 9 done on handmade fixtures alone — every case must run through `orch.orchestrate`

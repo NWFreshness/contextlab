@@ -112,6 +112,13 @@ class SandboxedExecutor:
                 self.policy.check(tool, args or {})
             except ToolError as exc:
                 span.set_attributes(code=exc.code, exit_code=-1)
+                # An unknown tool bubbles up as `UnknownToolError` so the
+                # orchestrator's Slice 7 catch fires and the run stops
+                # with `stop_reason=unknown_tool`. Other policy errors
+                # (extra args, path-jail violations) return a structured
+                # `ToolResult` so the trajectory shows what was denied.
+                if exc.code == ErrorCode.UNKNOWN_TOOL:
+                    raise UnknownToolError(tool) from exc
                 return _error_result(tool, exc)
 
             if not sandbox:

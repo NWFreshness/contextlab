@@ -163,6 +163,87 @@ def _already_called(state: State, tool: str) -> bool:
     return any(obs.get("tool") == tool for obs in state.observations)
 
 
+# ── Fixture policies (Slice 9) ─────────────────────────────────────────────
+# The brief allows a small registry of named policies so trajectory
+# goldens can pin the orchestrator to a specific behavior (always
+# retrieve, deliberately call an unknown tool, etc.) without hiding
+# if-statements in the eval runner. Production code never reaches this
+# registry — the `script_policy` field on a TrajectoryCase is empty for
+# happy-path cases, which falls through to `ScriptedPolicy`.
+
+@dataclass
+class _AlwaysRetrievePolicy:
+    """Always emits `retrieve`. Used to drive a `max_steps` cap from a
+    TrajectoryCase that sets `settings_override.max_steps=1`."""
+
+    def next_action(self, state: State) -> Action:
+        return Action.call_tool(
+            "retrieve",
+            {"query": state.query},
+            reason="fixture_always_retrieve",
+        )
+
+    def last_step_action(self, state: State) -> Action:
+        return Action.call_tool(
+            "retrieve",
+            {"query": state.query},
+            reason="fixture_always_retrieve_last",
+        )
+
+
+@dataclass
+class _UnknownToolPolicy:
+    """Always emits a tool name the executor's allowlist doesn't include.
+
+    `tool` defaults to `shell` so the orchestrator stops with
+    `stop_reason=unknown_tool`. The fixture name is `_UnknownToolPolicy`,
+    not the production policy — invoked only via
+    `TrajectoryCase.policy_name="unknown_tool"`."""
+
+    tool: str = "shell"
+
+    def next_action(self, state: State) -> Action:
+        return Action.call_tool(self.tool, {"cmd": "echo"}, reason="fixture_unknown_tool")
+
+    def last_step_action(self, state: State) -> Action:
+        return Action.finish("[unreachable]", reason="fixture_last_step")
+
+
+@dataclass
+class _ForbiddenCalcPolicy:
+    """Calls `python_calc` with an expression the AST policy rejects
+    (`__import__("os")`). Surfaces `code=policy` in the observation."""
+
+    expression: str = "__import__('os')"
+
+    def next_action(self, state: State) -> Action:
+        return Action.call_tool(
+            "python_calc",
+            {"expression": self.expression},
+            reason="fixture_forbidden_calc",
+        )
+
+    def last_step_action(self, state: State) -> Action:
+        return Action.finish("[unreachable]", reason="fixture_last_step")
+
+
+FIXTURE_POLICIES: dict[str, Any] = {
+    "always_retrieve": _AlwaysRetrievePolicy,
+    "unknown_tool": _UnknownToolPolicy,
+    "forbidden_calc": _ForbiddenCalcPolicy,
+}
+
+
+def build_fixture_policy(name: str) -> Any:
+    """Construct a fixture policy by name. Unknown name -> None (the
+    caller falls back to the production ScriptedPolicy and the eval
+    fails on a different check, which is louder than silent default)."""
+    cls = FIXTURE_POLICIES.get(name)
+    if cls is None:
+        return None
+    return cls()
+
+
 def _last_calc_result(state: State) -> Optional[Any]:
     """Return the integer / float result of the most recent python_calc call.
 

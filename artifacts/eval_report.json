@@ -1,6 +1,6 @@
 {
-  "started_at": "2026-09-15T18:36:43.940593+00:00",
-  "finished_at": "2026-09-15T18:37:27.214951+00:00",
+  "started_at": "2026-09-15T19:18:11.156689+00:00",
+  "finished_at": "2026-09-15T19:19:12.727018+00:00",
   "settings": {
     "config": {
       "chunk_tokens": 256,
@@ -20,7 +20,8 @@
       "assembly",
       "answer",
       "router",
-      "cache"
+      "cache",
+      "trajectory"
     ]
   },
   "suites": {
@@ -92,6 +93,27 @@
           "miss": 1
         }
       }
+    },
+    "trajectory": {
+      "n": 12,
+      "n_pass": 12,
+      "n_fail": 0,
+      "n_skip": 0,
+      "metrics": {
+        "n_total": 12,
+        "n_pass": 12,
+        "n_fail": 0,
+        "n_skip": 0,
+        "pass_rate": 1.0,
+        "case_types": {
+          "happy": 9,
+          "max_steps": 1,
+          "unknown_tool": 1,
+          "policy": 1
+        },
+        "step_cap_violations": 0,
+        "unknown_tool_on_happy_path": 0
+      }
     }
   },
   "gates": [
@@ -154,6 +176,24 @@
       "passed": true,
       "detail": "false_hit_rate=0.000 <= 0.0",
       "score": 0.0
+    },
+    {
+      "name": "gate_trajectory_pass_rate",
+      "passed": true,
+      "detail": "pass_rate=1.000 >= 0.85",
+      "score": 1.0
+    },
+    {
+      "name": "gate_trajectory_step_caps",
+      "passed": true,
+      "detail": "step_cap_violations=0 <= max=0",
+      "score": null
+    },
+    {
+      "name": "gate_trajectory_unknown_tool_happy",
+      "passed": true,
+      "detail": "unknown_tool_on_happy_path=0 <= max=0",
+      "score": null
     }
   ],
   "cases": [
@@ -190,11 +230,11 @@
         "incident_runbook::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 6.0807689997091074,
+      "latency_ms": 8.406450999245862,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "609e563a63ad6c8fb5cefc06ec5b29c7",
+      "trace_id": "98515a4b8c4f2dbb0f1bdaebbbd3db3b",
       "route": null,
       "model": null
     },
@@ -231,11 +271,11 @@
         "incident_runbook::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.886011999791663,
+      "latency_ms": 5.670257000019774,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "97b51d1bdb335ad318c8685eddd9de06",
+      "trace_id": "86eb8eb1b9beb1f98fd1ac67e9c2535b",
       "route": null,
       "model": null
     },
@@ -272,11 +312,11 @@
         "boilerplate::c0000"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.8518820005701855,
+      "latency_ms": 5.660594999426394,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "507fc427762860047e6521239e2d409a",
+      "trace_id": "8b0290e281a1b98a706d8392bc492226",
       "route": null,
       "model": null
     },
@@ -313,11 +353,11 @@
         "incident_runbook::c0002"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.79782999921008,
+      "latency_ms": 5.766977999883238,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "59c48799afd817e31d6c797fc5f3791b",
+      "trace_id": "720139e5d1f82fb7cd86a059366030f4",
       "route": null,
       "model": null
     },
@@ -354,11 +394,11 @@
         "incident_runbook::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 7.079478999912681,
+      "latency_ms": 5.756050000854884,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "a1acefdd302ef31762cb2c003403878b",
+      "trace_id": "f3045f9f0f6ee7ab3e9104e44dd6ca62",
       "route": null,
       "model": null
     },
@@ -395,11 +435,11 @@
         "refund_policy_v3::c0002"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.915195999477874,
+      "latency_ms": 6.979416000831407,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "21ebd12a9f6b9b9c4250288cd5973aa8",
+      "trace_id": "9fac63171b1734bdd4387f563c9700e9",
       "route": null,
       "model": null
     },
@@ -436,11 +476,11 @@
         "incident_runbook::c0002"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.641467999339511,
+      "latency_ms": 5.990526999084977,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "e1b53f73c9004f135258e4e93c400fea",
+      "trace_id": "8536e5263d939950cab064d5e3f953e7",
       "route": null,
       "model": null
     },
@@ -477,11 +517,11 @@
         "refund_policy_v3::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.541976999666076,
+      "latency_ms": 5.5322989992419025,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "ed7d83f6885637df4ffecdf4d0be23e4",
+      "trace_id": "30fab35e37f5709131268be68862ae21",
       "route": null,
       "model": null
     },
@@ -518,11 +558,11 @@
         "onboarding_faq::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 6.196369999997842,
+      "latency_ms": 6.0653179989458295,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "0ba495d208f043a769a05f650191fe07",
+      "trace_id": "71ed95387781d59f24126f35d7c2b800",
       "route": null,
       "model": null
     },
@@ -559,11 +599,11 @@
         "shipping_sla::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.565489999753481,
+      "latency_ms": 5.669332000252325,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "9e55843a0aeafa1b8b0163b049ec0cf1",
+      "trace_id": "749793d1a369f9102e1395e2d2686040",
       "route": null,
       "model": null
     },
@@ -600,11 +640,11 @@
         "pricing::c0003"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.356196999855456,
+      "latency_ms": 5.311333999998169,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "0caafddfb2991931519592c83646aac9",
+      "trace_id": "924194a17a4d7ebaf3825bed66732a21",
       "route": null,
       "model": null
     },
@@ -641,11 +681,11 @@
         "onboarding_faq::c0000"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.3814129996681,
+      "latency_ms": 5.368698999518529,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "2ba6e876850995dd418056bc4ce9085e",
+      "trace_id": "15e13555db9cd14bf087381e39e3cb89",
       "route": null,
       "model": null
     },
@@ -682,11 +722,11 @@
         "pricing::c0004"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.572330000177317,
+      "latency_ms": 5.590132999714115,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "e3c1167c76b501ad03b615d6caf79129",
+      "trace_id": "1f73be8af627fbc0b9d4a02371f06eb7",
       "route": null,
       "model": null
     },
@@ -723,11 +763,11 @@
         "refund_policy_v3::c0004"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.584475000432576,
+      "latency_ms": 5.540268000913784,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "7a083b4c0aee81cad34811245b5430c5",
+      "trace_id": "de06ef6fd3aa7a613711c0e733a3e86c",
       "route": null,
       "model": null
     },
@@ -764,11 +804,11 @@
         "refund_policy_v3::c0004"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.6896870000855415,
+      "latency_ms": 5.528939998839633,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "71f5076c1882299a7e3b22b7b6fcffa2",
+      "trace_id": "bc1067730099d64354a83d7376806696",
       "route": null,
       "model": null
     },
@@ -805,11 +845,11 @@
         "refund_policy_v3::c0002"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.877845999748388,
+      "latency_ms": 5.632630000036443,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "8fc606b2f83a926163b5933a9f8609a9",
+      "trace_id": "801da62b3ddbfead7fcaab3bc5e5e7cd",
       "route": null,
       "model": null
     },
@@ -846,11 +886,11 @@
         "refund_policy_v3::c0002"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.764186999840604,
+      "latency_ms": 6.817155999669922,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "31064ba0f9de776ec41d6fa7fa65c2ac",
+      "trace_id": "7b4f8fe1b5ea5f0e2f8b19bb49069c8e",
       "route": null,
       "model": null
     },
@@ -887,11 +927,11 @@
         "refund_policy_v3::c0004"
       ],
       "prompt_tokens": null,
-      "latency_ms": 6.1028030004308675,
+      "latency_ms": 6.011408000631491,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "7c230af21346e3167c4071a36edb044d",
+      "trace_id": "6ef7a0a117b7344c2510448ef0ed54c3",
       "route": null,
       "model": null
     },
@@ -928,11 +968,11 @@
         "onboarding_faq::c0002"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.850831999850925,
+      "latency_ms": 5.779441000413499,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "aff0f9bd3767ac21c65da61a7ff5ffd6",
+      "trace_id": "548b67709036a353dc470649710a08c8",
       "route": null,
       "model": null
     },
@@ -969,11 +1009,11 @@
         "refund_policy_v3::c0004"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.592374000116251,
+      "latency_ms": 5.431068000689265,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "6b63ae3c53df8dc01b59560da2a34e96",
+      "trace_id": "2f345c8f93361e3da61803dee6218ece",
       "route": null,
       "model": null
     },
@@ -1010,11 +1050,11 @@
         "error_codes::c0004"
       ],
       "prompt_tokens": null,
-      "latency_ms": 6.776364999495854,
+      "latency_ms": 5.705391999072162,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "f5b14d114aa848fbbde5e77a89e75043",
+      "trace_id": "3d8ff2d4122ea4e52123cdb008bbbd89",
       "route": null,
       "model": null
     },
@@ -1051,11 +1091,11 @@
         "error_codes::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.903412999941793,
+      "latency_ms": 5.933005000770208,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "06bdb77a926346e2aecc6f89a6abe6a4",
+      "trace_id": "5999769ed59aaa789960af6efae1b521",
       "route": null,
       "model": null
     },
@@ -1092,11 +1132,11 @@
         "shipping_sla::c0001"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.585191000136547,
+      "latency_ms": 5.588259000433027,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "360f37dc2d833ff0983a314b490d249b",
+      "trace_id": "ccf8833967af513ff19e91ae78e483d6",
       "route": null,
       "model": null
     },
@@ -1133,11 +1173,11 @@
         "pricing::c0000"
       ],
       "prompt_tokens": null,
-      "latency_ms": 5.367845999899146,
+      "latency_ms": 5.680849999407656,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "bc780c95aa9d42cf998f10a571c65136",
+      "trace_id": "817d677d2628fa186e4ea68cc3a4ecce",
       "route": null,
       "model": null
     },
@@ -1186,11 +1226,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 0.6874420005260617,
+      "latency_ms": 0.6678669997199904,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "4dd5573141dcca99faadf1ae61fc061e",
+      "trace_id": "69f58ccadbefdf5108a7270f78c15c63",
       "route": null,
       "model": null
     },
@@ -1241,11 +1281,11 @@
         "mem_001"
       ],
       "prompt_tokens": 31,
-      "latency_ms": 0.6055189996914123,
+      "latency_ms": 0.5956370005151257,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "df89ee1c6ef2ee3aec544d8cd0b0e190",
+      "trace_id": "936fb98b14bed1bd68b9b61d5e0f1b63",
       "route": null,
       "model": null
     },
@@ -1297,11 +1337,11 @@
         "mem_new"
       ],
       "prompt_tokens": 62,
-      "latency_ms": 0.6290880000960897,
+      "latency_ms": 0.5886060007469496,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "039d6405d253c634863d1009d67db53f",
+      "trace_id": "1c6449f9edd19e2a7a0ae2bd007ae6fb",
       "route": null,
       "model": null
     },
@@ -1350,11 +1390,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 41,
-      "latency_ms": 0.5452069999591913,
+      "latency_ms": 0.5568179985857569,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "b0a87458277ef2acfbd963632e405424",
+      "trace_id": "5c38e3d407f56264f9f4d0376df84928",
       "route": null,
       "model": null
     },
@@ -1403,11 +1443,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 21,
-      "latency_ms": 0.5463280003823456,
+      "latency_ms": 0.5328959996404592,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "d14fe4eb503309544a3ed9b91288600c",
+      "trace_id": "546973c47eeec0b3efd0d1fd0eb2f883",
       "route": null,
       "model": null
     },
@@ -1462,11 +1502,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 0.5344789997252519,
+      "latency_ms": 0.5198460003157379,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "2468cb9fa79c8a24daf87767c3835c98",
+      "trace_id": "9f6f1554087a1d489e7a9a5523f27852",
       "route": null,
       "model": null
     },
@@ -1518,11 +1558,11 @@
         "mem_v3"
       ],
       "prompt_tokens": 70,
-      "latency_ms": 0.6835949998276192,
+      "latency_ms": 0.5758520001108991,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "4a86c2f4b759c7ff5202f5de76221d06",
+      "trace_id": "c54415943fbf5f9c0bbbfce08abd94a0",
       "route": null,
       "model": null
     },
@@ -1565,11 +1605,11 @@
         "error_codes::c0003"
       ],
       "prompt_tokens": 284,
-      "latency_ms": 2364.0798570004335,
+      "latency_ms": 2329.5682150001085,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "a975ceda0fcceaf77fc8c6fda00f8a01",
+      "trace_id": "1aed1872c79d523c6174e20e410ae453",
       "route": null,
       "model": null
     },
@@ -1612,11 +1652,11 @@
         "onboarding_faq::c0003"
       ],
       "prompt_tokens": 337,
-      "latency_ms": 2403.042431000358,
+      "latency_ms": 2347.3713000003045,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "b87c6e20e240674673195eb45c20720e",
+      "trace_id": "cf1ac0fe6493c34bbf566267b41c8c30",
       "route": null,
       "model": null
     },
@@ -1659,11 +1699,11 @@
         "refund_policy_v1::c0000"
       ],
       "prompt_tokens": 353,
-      "latency_ms": 2402.6601780005876,
+      "latency_ms": 2329.111154000202,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "8ba06a508a63eb284531a057efc7ecd2",
+      "trace_id": "2674e973e2aaf944190e621d94e7af0f",
       "route": null,
       "model": null
     },
@@ -1706,11 +1746,11 @@
         "incident_runbook::c0001"
       ],
       "prompt_tokens": 329,
-      "latency_ms": 2412.967790000039,
+      "latency_ms": 2335.0765320010396,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "a9d03b9eb35782a6e3ca2e9659d28abb",
+      "trace_id": "b26644d8b4ae06619e2864602faa460b",
       "route": null,
       "model": null
     },
@@ -1753,11 +1793,11 @@
         "boilerplate::c0003"
       ],
       "prompt_tokens": 340,
-      "latency_ms": 2356.6069849994165,
+      "latency_ms": 2334.819843999867,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "5fe6d06024d4b52cdb68c0bbc651a21f",
+      "trace_id": "f94db99b30c7e9dfeb7c4d25fd260d93",
       "route": null,
       "model": null
     },
@@ -1800,11 +1840,11 @@
         "shipping_sla::c0003"
       ],
       "prompt_tokens": 328,
-      "latency_ms": 2399.8004840004796,
+      "latency_ms": 2329.925520998586,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "31ee124638ecc2d7bf2301190556cbe8",
+      "trace_id": "d81aa9fa27501355dbe89898e0124ae5",
       "route": null,
       "model": null
     },
@@ -1847,11 +1887,11 @@
         "incident_runbook::c0001"
       ],
       "prompt_tokens": 327,
-      "latency_ms": 2561.4533810003195,
+      "latency_ms": 2327.2027709990653,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "a499a5b7055859173a4c7c953cffc37d",
+      "trace_id": "33dc55f1e5586b272c1dbe83778dc2f9",
       "route": null,
       "model": null
     },
@@ -1894,11 +1934,11 @@
         "error_codes::c0003"
       ],
       "prompt_tokens": 307,
-      "latency_ms": 2406.0162239993588,
+      "latency_ms": 2347.785415000544,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "008df7ee4da309babb89a57bfe65310e",
+      "trace_id": "628341e4119fc4fd7f9d3e3289321a40",
       "route": null,
       "model": null
     },
@@ -1941,11 +1981,11 @@
         "refund_policy_v1::c0000"
       ],
       "prompt_tokens": 320,
-      "latency_ms": 2362.894650000271,
+      "latency_ms": 2315.5625620001956,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "d17be808d9681491ac6d32cda693987f",
+      "trace_id": "c66accf96c8b42b6f8b4c2a69ab28bcb",
       "route": null,
       "model": null
     },
@@ -1988,11 +2028,11 @@
         "refund_policy_v3::c0001"
       ],
       "prompt_tokens": 296,
-      "latency_ms": 2358.722678000049,
+      "latency_ms": 2332.603987000766,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "e4e87ece3fa4ad73910878d253b6388e",
+      "trace_id": "097cbff57be2717f292eb192c965f552",
       "route": null,
       "model": null
     },
@@ -2035,11 +2075,11 @@
         "onboarding_faq::c0003"
       ],
       "prompt_tokens": 327,
-      "latency_ms": 2399.1453540002112,
+      "latency_ms": 2350.781271001324,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "d17c6ceb0415a4e30ae4f5b303b8741f",
+      "trace_id": "a17f75901d6fd2f342782ebd659e15a4",
       "route": null,
       "model": null
     },
@@ -2082,11 +2122,11 @@
         "boilerplate::c0001"
       ],
       "prompt_tokens": 289,
-      "latency_ms": 2391.4607349997823,
+      "latency_ms": 2316.015360000165,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "dbd85d4849c4153245b22eec9f5df57f",
+      "trace_id": "545b941a944fda3e1f71144a23c69a6b",
       "route": null,
       "model": null
     },
@@ -2129,11 +2169,11 @@
         "onboarding_faq::c0003"
       ],
       "prompt_tokens": 323,
-      "latency_ms": 2342.56319799988,
+      "latency_ms": 2328.285863999554,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "cb9aea608b543b41a3ccdceb81a5a221",
+      "trace_id": "ad236b283df0bf430f0a30eef1e31667",
       "route": null,
       "model": null
     },
@@ -2176,11 +2216,11 @@
         "refund_policy_v1::c0000"
       ],
       "prompt_tokens": 331,
-      "latency_ms": 2357.070078999641,
+      "latency_ms": 2320.3692469996895,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "34b753579a12ec982c56cb48147f8f3c",
+      "trace_id": "34e9dec8b73603ab1640836c3a161d03",
       "route": null,
       "model": null
     },
@@ -2205,11 +2245,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 3.1651969993617968,
+      "latency_ms": 3.117591999398428,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "8309d80ccfaf12439c01c3235b289cfb",
+      "trace_id": "fa3288653fd86ca7ece7581a164cf6d6",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2234,11 +2274,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 0.7313899996006512,
+      "latency_ms": 0.70433400105685,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "13840d003a23aa241fbf70784efebd7e",
+      "trace_id": "8f04158738c141a38afdc494ab098f75",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2263,11 +2303,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 0.6374719996529166,
+      "latency_ms": 0.6336730002658442,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "3b55814ab848913f1895d19ed11561d2",
+      "trace_id": "e88173cdbfc8e726d664400feec3130b",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2292,11 +2332,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 0.6373500000336207,
+      "latency_ms": 0.6873639995319536,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "ca6649ee4936a2435ba9d91703c1d2e7",
+      "trace_id": "0ac367fc21c3f5e28f27537caae53474",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2321,11 +2361,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 21,
-      "latency_ms": 0.5421460000434308,
+      "latency_ms": 0.616995001109899,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "88ab97b8d4e520abe6b17599ee5bcdd5",
+      "trace_id": "f749184bd0cda479c9ff3cadbe76985f",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2350,11 +2390,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 22,
-      "latency_ms": 0.5286249997880077,
+      "latency_ms": 0.5858380009158282,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "2f5cb5b963c213361ab7df648e5ecf23",
+      "trace_id": "5aac09485397706e73b21ee0e7acb0a2",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2379,11 +2419,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 19,
-      "latency_ms": 0.5524159996639355,
+      "latency_ms": 0.5413420003606007,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "23215c1eb7d8299d2693dc6e08e4511a",
+      "trace_id": "4050edf49e1038a60b819d45a221b8c9",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2408,11 +2448,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 18,
-      "latency_ms": 0.5648209998980747,
+      "latency_ms": 0.5314690006343881,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "8f83db0fd89d12b4353b8787ce25c5de",
+      "trace_id": "b448ad8b8ced01bb7f2920ba2d16cfe6",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2437,11 +2477,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 21,
-      "latency_ms": 0.5464639998535858,
+      "latency_ms": 0.5553849987336434,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "9d2d7a465b3a094766407f57c1e23291",
+      "trace_id": "c21088e276f94cc9464aabdd835eabdb",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2466,11 +2506,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 21,
-      "latency_ms": 0.5309610005497234,
+      "latency_ms": 0.5599079995590728,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "ea284f8003f7c203a540fffcd1ddec27",
+      "trace_id": "402773266516951c8676348891de7e08",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2495,11 +2535,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 24,
-      "latency_ms": 0.5508849999387166,
+      "latency_ms": 0.5772909989900654,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "c09027f5c42cfac28c263adb16c64075",
+      "trace_id": "344f3ca96ee0ec7389d6f7d3ec28cd1d",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2524,11 +2564,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 25,
-      "latency_ms": 0.5816579996462679,
+      "latency_ms": 0.5916350000916282,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "9a9d75bfdb82c9d223ab29401db79cea",
+      "trace_id": "4b67191fbd14cb60a4b30c652a9d9879",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2553,11 +2593,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 20,
-      "latency_ms": 0.516218000484514,
+      "latency_ms": 0.5248540001048241,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "2a5d7d9f11288bed7658122310235ab1",
+      "trace_id": "ab079662cae82812c3d43913b0f7066f",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2582,11 +2622,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 18,
-      "latency_ms": 0.5082910001874552,
+      "latency_ms": 0.5009699998481665,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "6cac66dac785175a79bed29183c99060",
+      "trace_id": "56d3c96992efde114a39a7e55e91352f",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2618,11 +2658,11 @@
         "mem_sla_old"
       ],
       "prompt_tokens": 324,
-      "latency_ms": 2333.4817570002997,
+      "latency_ms": 2354.067649999706,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "b7b46fa44f84f41e1831cfb191b280e5",
+      "trace_id": "719cc4347051340ca7999aafa2b67280",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2655,11 +2695,11 @@
         "mem_v3"
       ],
       "prompt_tokens": 372,
-      "latency_ms": 2299.7552159995394,
+      "latency_ms": 2374.772850998852,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "bf1f205c5b631582b6aa4a789b174147",
+      "trace_id": "f6cd660199d77108312c18328413b8b3",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2684,11 +2724,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 17,
-      "latency_ms": 0.7237469999381574,
+      "latency_ms": 0.8995690004667267,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "ec629ad7210d553764d1c0375c8b2258",
+      "trace_id": "ef5cc53ed42a5f9f0967c76bc756054d",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2713,11 +2753,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 19,
-      "latency_ms": 0.6753380002919585,
+      "latency_ms": 0.672135998684098,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "87ab784eb7f01c7a4b2b539694939dd1",
+      "trace_id": "dba00ff16477637933218a98fafe863d",
       "route": "cheap",
       "model": "gpt-4o-mini"
     },
@@ -2742,11 +2782,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": 23,
-      "latency_ms": 0.5941770004938007,
+      "latency_ms": 0.5955720007477794,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "65b98d12efbe66362a987d088465dce1",
+      "trace_id": "048ae3afcc87011b96610b0660b66ec3",
       "route": "strong",
       "model": "PLACEHOLDER_STRONG_MODEL"
     },
@@ -2765,11 +2805,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 1957.3251570000139,
+      "latency_ms": 1945.7068430001527,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "2ac18b8528d29b4dedd2a4fddacf2119",
+      "trace_id": "620c59ab5cc920f378f2b7f5650bf3ff",
       "route": null,
       "model": null
     },
@@ -2788,11 +2828,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 16.70139999987441,
+      "latency_ms": 16.840080999827478,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "7b95ba32012b58af7991e5b6326fac20",
+      "trace_id": "1935bcccf6d894271e5a9d86baa4a648",
       "route": null,
       "model": null
     },
@@ -2811,11 +2851,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 11.655645000246295,
+      "latency_ms": 13.05715600028634,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "015778c68988d773e84bf9bf4f111be6",
+      "trace_id": "e4b22cdb0c663d10f80faa4326679770",
       "route": null,
       "model": null
     },
@@ -2834,11 +2874,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 11.901330999535276,
+      "latency_ms": 11.952597998970305,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "4487991a3b642a2866ae73c63fbd9dd5",
+      "trace_id": "13ae2073f91f83107c0053b1e0f83b5a",
       "route": null,
       "model": null
     },
@@ -2857,11 +2897,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 12.741712000206462,
+      "latency_ms": 11.66240999918955,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "b5c4f6c5c85e0e6dc7f9d931f962c1b3",
+      "trace_id": "f4cc6c45e6378835fc9a0597421be62a",
       "route": null,
       "model": null
     },
@@ -2880,11 +2920,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 6.195119999574672,
+      "latency_ms": 6.168886000523344,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "6de34de124c4f349d96b520d8726f9cf",
+      "trace_id": "aba0f53a455ab8957af9d1fa9ef486de",
       "route": null,
       "model": null
     },
@@ -2903,11 +2943,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 6.1264380001375685,
+      "latency_ms": 6.351484000333585,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "cbcd9e56e280d35222bf9e49579c2139",
+      "trace_id": "ff1f1f9018190d7b259547a368272a32",
       "route": null,
       "model": null
     },
@@ -2926,11 +2966,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 12.07777099989471,
+      "latency_ms": 12.403622999045183,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "f30a677160105901fe7ca125fba667a8",
+      "trace_id": "9a4f2fc19590891c312f60a76fff8dc9",
       "route": null,
       "model": null
     },
@@ -2949,11 +2989,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 11.884645000463934,
+      "latency_ms": 12.008532999971067,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "9218e097e44022e7b66dad75ab6a2392",
+      "trace_id": "bb2d11555b6e811ad042bc9043f469ad",
       "route": null,
       "model": null
     },
@@ -2972,11 +3012,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 12.53599400024541,
+      "latency_ms": 12.607485999978962,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "2a16a75b537f77ccac15af6c103c3255",
+      "trace_id": "24cdc5ab8a6c89077e224a27824401c0",
       "route": null,
       "model": null
     },
@@ -2995,11 +3035,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 11.404136999772163,
+      "latency_ms": 11.441913999078679,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "ca26125a886665f0ee8dc740a2390187",
+      "trace_id": "15520768555c7e7fb203efe052b01625",
       "route": null,
       "model": null
     },
@@ -3018,11 +3058,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 11.167531999490166,
+      "latency_ms": 11.193872000148986,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "08a386e9b70ce69fe3e99e2b9ba71d3f",
+      "trace_id": "b38ece04fb21661b0f0bf1b51f4e9e01",
       "route": null,
       "model": null
     },
@@ -3041,11 +3081,11 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 13.233164000666875,
+      "latency_ms": 13.30081599917321,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "5ec6e8c9a1c746cc0375c25086ded8f3",
+      "trace_id": "54cd33741dd74c07bd201db6315bc734",
       "route": null,
       "model": null
     },
@@ -3064,11 +3104,1127 @@
       "retrieved_ids": [],
       "cited_ids": [],
       "prompt_tokens": null,
-      "latency_ms": 11.840389000099094,
+      "latency_ms": 11.687428999721305,
       "cost_usd": null,
       "output": null,
       "judge_output": null,
-      "trace_id": "0ede07f4de0d1004890df403e92c670f",
+      "trace_id": "f442913d7fe1095455c4be76de9117c9",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t001",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=3 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['read_chunk', 'retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "expected=['error_codes::c0001', 'error_codes::c0002', 'incident_runbook::c0000', 'incident_runbook::c0003', 'incident_runbook::c0004'] referenced=['error_codes::c0001', 'error_codes::c0002', 'error_codes::c0003', 'incident_runbook::c0000', 'incident_runbook::c0004'] overlap=['error_codes::c0001', 'error_codes::c0002', 'incident_runbook::c0000', 'incident_runbook::c0004']",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "required=['E-4471'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='a5dcea302f2529cd2f2a32b5ce37ffaf'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=141 budget=800",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "error_codes::c0001",
+        "error_codes::c0002",
+        "error_codes::c0003",
+        "incident_runbook::c0000",
+        "incident_runbook::c0004"
+      ],
+      "prompt_tokens": 141,
+      "latency_ms": 2367.140135998852,
+      "cost_usd": null,
+      "output": "If E-4471 persists after retry, escalate to L2 support with:\n- Customer ID\n- Order ID\n- Item SKU\n- Timestamp of original error\n- All related log entries",
+      "judge_output": null,
+      "trace_id": "67994b8a935eb829d3157463a35d2868",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t002",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=2 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "expected=['refund_policy_v3::c0000', 'refund_policy_v3::c0001', 'refund_policy_v3::c0002'] referenced=['onboarding_faq::c0001', 'refund_policy_v1::c0000', 'refund_policy_v3::c0000', 'refund_policy_v3::c0001', 'refund_policy_v3::c0002'] overlap=['refund_policy_v3::c0000', 'refund_policy_v3::c0001', 'refund_policy_v3::c0002']",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "required=['30 days'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "forbidden=['14 days'] hits=[]",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='2a5dd11af737d8c182fbd7f5b9eda982'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=37 budget=800",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0002"
+      ],
+      "prompt_tokens": 37,
+      "latency_ms": 2345.903575000193,
+      "cost_usd": null,
+      "output": "**Policy ID: POL-REF-30**\n\nOur refund window is **30 days** from purchase date. We want you to be completely satisfied with your purchase.",
+      "judge_output": null,
+      "trace_id": "edeee6a5af9c93a430b647407a2ead2d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t003",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=2 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "expected=['refund_policy_v1::c0000', 'refund_policy_v3::c0000', 'refund_policy_v3::c0001'] referenced=['onboarding_faq::c0001', 'refund_policy_v1::c0000', 'refund_policy_v3::c0000', 'refund_policy_v3::c0001', 'refund_policy_v3::c0002'] overlap=['refund_policy_v1::c0000', 'refund_policy_v3::c0000', 'refund_policy_v3::c0001']",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='198d1d7f7d54cec9477ac66ba2334d0f'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=37 budget=800",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "refund_policy_v1::c0000",
+        "refund_policy_v3::c0000",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0002"
+      ],
+      "prompt_tokens": 37,
+      "latency_ms": 2342.657530998622,
+      "cost_usd": null,
+      "output": "**Policy ID: POL-REF-30**\n\nOur refund window is **30 days** from purchase date. We want you to be completely satisfied with your purchase.",
+      "judge_output": null,
+      "trace_id": "8f2a5b6631f7abf8e8ce4dce5e5075c0",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t004",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=2 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "expected=['onboarding_faq::c0002', 'shipping_sla::c0000'] referenced=['onboarding_faq::c0001', 'onboarding_faq::c0002', 'shipping_sla::c0000', 'shipping_sla::c0001', 'shipping_sla::c0003'] overlap=['onboarding_faq::c0002', 'shipping_sla::c0000']",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "required=['5'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='3d08a67fc4f0aa211581f3d450392903'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=39 budget=800",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "onboarding_faq::c0001",
+        "onboarding_faq::c0002",
+        "shipping_sla::c0000",
+        "shipping_sla::c0001",
+        "shipping_sla::c0003"
+      ],
+      "prompt_tokens": 39,
+      "latency_ms": 2314.451794998604,
+      "cost_usd": null,
+      "output": "**Q: How long does ground shipping take?**\n\nA: For West Coast addresses, standard ground shipping is 5 business days. East Coast is typically 7-10 business days.\n\n**Q: Can I track my order?**\n\nA: Yes",
+      "judge_output": null,
+      "trace_id": "211bf4aff2752e0deb2a0e4f90e9f351",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t005",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=2 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['python_calc'] seen=['python_calc']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=['retrieve'] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=[])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "required=['14'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='a9f2ee641a1dfcbc31334e83fa2e4f7a'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=61 budget=400",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 61,
+      "latency_ms": 44.63241299890797,
+      "cost_usd": null,
+      "output": "14",
+      "judge_output": null,
+      "trace_id": "9bcbe7ecd7a1afd9dc2474a54cc5f28c",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t006",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=2 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['python_calc'] seen=['python_calc']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=['retrieve'] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=[])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "required=['4'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='2625dc77af2fe2827302323102f72db5'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=56 budget=400",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 56,
+      "latency_ms": 43.99684400050319,
+      "cost_usd": null,
+      "output": "4",
+      "judge_output": null,
+      "trace_id": "3b288eb03576326cfe912bde2227b436",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t007",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=3 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve', 'read_chunk'] seen=['read_chunk', 'retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "expected=['incident_runbook::c0004'] referenced=['error_codes::c0001', 'error_codes::c0002', 'error_codes::c0003', 'incident_runbook::c0000', 'incident_runbook::c0004'] overlap=['incident_runbook::c0004']",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "required=['E-4471'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='421e72542f4438995fb2423dfd54de3e'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=140 budget=800",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "error_codes::c0001",
+        "error_codes::c0002",
+        "error_codes::c0003",
+        "incident_runbook::c0000",
+        "incident_runbook::c0004"
+      ],
+      "prompt_tokens": 140,
+      "latency_ms": 2414.6380559996032,
+      "cost_usd": null,
+      "output": "If E-4471 persists after retry, escalate to L2 support with:\n- Customer ID\n- Order ID\n- Item SKU\n- Timestamp of original error\n- All related log entries",
+      "judge_output": null,
+      "trace_id": "658aad12369dfeced306506c6e28e221",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t008",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=2 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=['error_codes::c0004', 'incident_runbook::c0001', 'incident_runbook::c0002', 'refund_policy_v3::c0001', 'refund_policy_v3::c0004'])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "forbidden=['POL-WARRANTY-99', 'POL-SNOWMOBILE-1', 'POL-SNOW-2024'] hits=[]",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='c038dc590de8633696a79b48eefbace4'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=40 budget=800",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "error_codes::c0004",
+        "incident_runbook::c0001",
+        "incident_runbook::c0002",
+        "refund_policy_v3::c0001",
+        "refund_policy_v3::c0004"
+      ],
+      "prompt_tokens": 40,
+      "latency_ms": 2354.404401001375,
+      "cost_usd": null,
+      "output": "We may make exceptions for defective products or errors on our end. Contact support with your order number for special consideration.\n\n**Policy ID: POL-REF-30** \u2014 Last updated 2024-01-15",
+      "judge_output": null,
+      "trace_id": "7cb89bfd6c01036b07d7a3fe9fc8441d",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t009",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='max_steps' expected=['max_steps']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=1 cap=1 (orch_max_steps=1)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=['incident_runbook::c0001', 'incident_runbook::c0002', 'onboarding_faq::c0003', 'refund_policy_v3::c0001', 'shipping_sla::c0002'])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='2420938c78376804a239126f7a9f0a9f'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "no prompt_tokens on trajectory (stop_reason='max_steps')",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "incident_runbook::c0001",
+        "incident_runbook::c0002",
+        "onboarding_faq::c0003",
+        "refund_policy_v3::c0001",
+        "shipping_sla::c0002"
+      ],
+      "prompt_tokens": null,
+      "latency_ms": 2321.5163570002915,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "894d6e078f0410c678afafe705372125",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t010",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='unknown_tool' expected=['unknown_tool']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=1 cap=1 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['shell'] seen=['shell']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=[])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='9808db4ab1b489e78e7f5509371bf7f7'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "no prompt_tokens on trajectory (stop_reason='unknown_tool')",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": null,
+      "latency_ms": 3.417021000132081,
+      "cost_usd": null,
+      "output": null,
+      "judge_output": null,
+      "trace_id": "819573468e8762430b65ab47f0be7f29",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t011",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=6 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['python_calc'] seen=['python_calc']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=[])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "required=['policy', 'disallowed'] missing=[]",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='e4d8615236a3883672fc56a7fc9d4a40'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=208 budget=400",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [],
+      "prompt_tokens": 208,
+      "latency_ms": 199.97032600076636,
+      "cost_usd": null,
+      "output": "[unreachable]",
+      "judge_output": null,
+      "trace_id": "e938262902fa7acfb607977bd2d51867",
+      "route": null,
+      "model": null
+    },
+    {
+      "id": "t012",
+      "suite": "trajectory",
+      "passed": true,
+      "checks": [
+        {
+          "name": "stop_reason",
+          "passed": true,
+          "detail": "stop_reason='done' expected=['done']",
+          "score": null
+        },
+        {
+          "name": "step_cap",
+          "passed": true,
+          "detail": "n_steps=3 cap=6 (orch_max_steps=6)",
+          "score": null
+        },
+        {
+          "name": "required_tools",
+          "passed": true,
+          "detail": "required=['retrieve'] seen=['read_chunk', 'retrieve']",
+          "score": null
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "detail": "forbidden=[] found=[]",
+          "score": null
+        },
+        {
+          "name": "tool_order",
+          "passed": true,
+          "detail": "tool_order_strict=false (skipped)",
+          "score": null
+        },
+        {
+          "name": "citations",
+          "passed": true,
+          "detail": "no expected_citations (referenced=['error_codes::c0001', 'error_codes::c0002', 'error_codes::c0003', 'incident_runbook::c0000', 'incident_runbook::c0004'])",
+          "score": null
+        },
+        {
+          "name": "obs_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "obs_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_contains",
+          "passed": true,
+          "detail": "no required substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "final_forbids",
+          "passed": true,
+          "detail": "no forbidden substrings (skipped)",
+          "score": null
+        },
+        {
+          "name": "trace_present",
+          "passed": true,
+          "detail": "trace_id='297322bb6affb7984db8369d73401413'",
+          "score": null
+        },
+        {
+          "name": "prompt_tokens",
+          "passed": true,
+          "detail": "prompt_tokens=141 budget=250",
+          "score": null
+        }
+      ],
+      "retrieved_ids": [],
+      "cited_ids": [
+        "error_codes::c0001",
+        "error_codes::c0002",
+        "error_codes::c0003",
+        "incident_runbook::c0000",
+        "incident_runbook::c0004"
+      ],
+      "prompt_tokens": 141,
+      "latency_ms": 2325.8012699989195,
+      "cost_usd": null,
+      "output": "If E-4471 persists after retry, escalate to L2 support with:\n- Customer ID\n- Order ID\n- Item SKU\n- Timestamp of original error\n- All related log entries",
+      "judge_output": null,
+      "trace_id": "46cb7f9e5e69f0d890f12343745a93d1",
       "route": null,
       "model": null
     }

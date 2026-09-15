@@ -1,6 +1,8 @@
-# ContextLab — Local Hybrid Retrieval + Context Assembler
+# ContextLab — Local Retrieval, Context Assembly, Tracing, Routing, Cache, Agents, Sandbox, Trajectory Evals
 
-A from-scratch teaching system for AI engineering.
+A from-scratch teaching system for AI engineering. Nine slices, no
+frameworks: retrieval → pack → eval → trace → route → cache → bounded loop
+→ sandbox → trajectory gates.
 
 ## Quick Start
 
@@ -18,11 +20,14 @@ python -m contextlab.retrieve --query "what does E-4471 mean" --k 5 --mode hybri
 # Assemble context
 python -m contextlab assemble --query "what does E-4471 mean" --budget 800 --k 8
 
+# Run the bounded orchestrator (script driver, offline)
+python -m contextlab.orch run --query "what does E-4471 mean" --driver script
+
 # Run tests
 pytest -q
 
-# Evaluate retrieval on golden set
-python -m contextlab.eval_retrieval
+# Evaluate everything (retrieval, assembly, answer, router, cache, trajectory)
+python -m contextlab.evals run --suite all --offline
 ```
 
 ## Architecture
@@ -34,6 +39,9 @@ Slice 3: evals/*.jsonl → suites → graders → gates → artifacts/eval_repor
 Slice 4: every hop → spans (trace_id, parent_span_id, attributes) → data/traces/YYYYMMDD.jsonl
 Slice 5: route(request, signals) → config/router.yaml → Decision (cheap / strong / fallback)
 Slice 6: cache.lookup(query, fingerprint) → similarity + meaning guards → HIT / MISS → data/cache.jsonl
+Slice 7: orch.run(query) → for step in range(max_steps) → orch.step → Action → ToolResult → artifacts/trajectories/<id>.json
+Slice 8: tool.exec → SandboxPolicy.check → subprocess.run(cwd, env_allowlist, timeout) → ToolResult | ToolError
+Slice 9: evals/trajectory_golden.jsonl → orch.run(driver=script) → graders_trajectory.grade → gates
 ```
 
 ### Slice 1 — Retrieval
@@ -68,6 +76,28 @@ Slice 6: cache.lookup(query, fingerprint) → similarity + meaning guards → HI
 - Local JSONL store; `cache.lookup` / `cache.write` spans on every attempt; `evals/cache_golden.jsonl` gates hit rate and false-hit rate
 - The measured bands overlap (a must-miss pair scores 0.986, same-answer paraphrases 0.54–0.86), so the guards — not the threshold — carry correctness
 
+### Slice 7 — Bounded Agent Orchestrator
+- `for step in range(max_steps)` — never `while True`; hitting the cap is a successful machine stop (`stop_reason=max_steps`)
+- State is a pydantic model (`State.model_dump()` after every step); the action list replays
+- Scripted driver by default (offline, deterministic); `driver: llm` is a structured-output stub that fails closed without a client
+- `orch.run` root span with one `orch.step` child per iteration; `assemble.pack` runs after the loop, before the trajectory is written
+- Stop reasons: `done` | `max_steps` | `unknown_tool` | `budget` | `error`; the trajectory file is written on every exit
+
+### Slice 8 — Sandboxed Tool Executor
+- **Policy gate (always)**: tool allowlist, closed `args_schema`, path jail (after `..` resolution), env allowlist
+- **Containment (best-effort)**: `subprocess.run` with a fresh temp `cwd`, allowlisted `env`, `stdin=DEVNULL`, wall-clock `timeout`, output cap
+- `python_calc` is the one sandboxed tool: an AST walk over numbers and `+ - * / // % **`. No `eval()` on raw strings
+- `retrieve` / `read_chunk` stay in-process (Slice 1 library calls) — `sandbox: false` per tool in `config/sandbox.yaml`
+- Every dispatch is a `tool.exec` span: `tool`, `sandbox`, `backend`, `timeout_s`, `exit_code`, `code`
+- `prlimit` is opt-in (`cpu_s`); the memory cap is deliberately not applied (Python startup imports blow past 256 MiB on OpenBLAS)
+
+### Slice 9 — Trajectory Eval Suite
+- **Constraint goldens, not step dumps**: a row asserts what must be true (stop reason, step cap, required/forbidden tools, tool order, citations, observation substrings)
+- 12 graders over a `Trajectory`; every one deterministic — no LLM judge on step lists
+- Every case runs through `orch.orchestrate`, so the sandbox and tracer are actually exercised
+- `evals/gates.yaml` → `trajectory: {min_pass_rate: 0.85, max_step_cap_violations: 0, max_unknown_tool_on_happy_path: 0}`
+- Recorded mutation: `max_steps: 1` flips the suite from 12/12 (pass_rate 1.000) to 1/12 (0.083, gate FAIL)
+
 ## Configuration
 
 | File | What it controls |
@@ -77,6 +107,8 @@ Slice 6: cache.lookup(query, fingerprint) → similarity + meaning guards → HI
 | `config/trace.yaml` | tracing on/off, trace dir, redact keys, include_prompt |
 | `config/router.yaml` | policies, models, prices, intent keywords, rules |
 | `config/cache.yaml` | threshold, store path, fingerprint requirement, guards |
+| `config/orchestrator.yaml` | max_steps, driver, registered tools |
+| `config/sandbox.yaml` | backend, timeout, output cap, env/path allowlists, per-tool sandbox flag |
 | `prompts/system_default.md` | system prompt |
 | `.env` | optional: EMBEDDING_MODEL, OPENAI_API_KEY |
 
@@ -113,6 +145,24 @@ python -m contextlab.cache seed --from-evals
 python -m contextlab.cache stats
 python -m contextlab.cache clear --yes
 python -m contextlab.evals run --suite cache --offline
+
+# Orchestrator (Slice 7)
+python -m contextlab.orch run --query "what does E-4471 mean" --driver script
+python -m contextlab.orch run --query "what is 2*(3+4)" --driver script       # python_calc
+python -m contextlab.orch run --query "what does E-4471 mean" --max-steps 6
+python -m contextlab.trace show --last   # orch.run / orch.step tree
+
+# Sandbox (Slice 8)
+pytest tests/test_sandbox.py -q
+# Backend is config/sandbox.yaml: backend (subprocess|inprocess), timeout_s,
+# env_allowlist, path_allowlist, and per-tool {sandbox: true|false}
+python -m contextlab.trace show --last   # tool.exec spans
+
+# Trajectory evals (Slice 9)
+pytest tests/test_traj_evals.py -q
+python -m contextlab.evals run --suite trajectory --offline
+python -m contextlab.evals run --suite all --offline
+python -m contextlab.trace show --case t001
 ```
 
 ## Cache — similarity is not identity (Slice 6)
@@ -245,7 +295,65 @@ readable.
 Env overrides: `CONTEXTLAB_TRACE_ENABLED=0|1`, `CONTEXTLAB_TRACE_DIR=<path>`,
 `CONTEXTLAB_TRACE_REDACT_KEYS=a,b`, `CONTEXTLAB_TRACE_INCLUDE_PROMPT=0|1`.
 
+## Trajectory evals — grading the path, not just the answer (Slice 9)
+
+```bash
+$ python -m contextlab.evals run --suite trajectory --offline
+=== Eval Summary ===
+  trajectory: 12/12 passed
+    pass_rate: 1.000
+    case_types: {'happy': 9, 'max_steps': 1, 'unknown_tool': 1, 'policy': 1}
+    step_cap_violations: 0
+    unknown_tool_on_happy_path: 0
+Gates:
+  [PASS] gate_trajectory_pass_rate: pass_rate=1.000 >= 0.85
+  [PASS] gate_trajectory_step_caps: step_cap_violations=0 <= max=0
+  [PASS] gate_trajectory_unknown_tool_happy: unknown_tool_on_happy_path=0 <= max=0
+
+=== EVAL PASSED ===
+```
+
+Each golden row lists **constraints**, not an expected step dump. A step
+dump breaks the moment `retrieve` returns one extra hit; a constraint
+(`stop_reason=done`, `required_tools=[retrieve]`, `observed 14`) is stable
+and still catches real regressions:
+
+```json
+{"id": "t005", "query": "what is 2*(3+4)", "case_type": "happy",
+ "expected_stop_reasons": ["done"], "required_tools": ["python_calc"],
+ "forbidden_tools": ["retrieve"], "required_observation_substrings": ["14"]}
+```
+
+Twelve graders run per case — `stop_reason`, `step_cap`, `required_tools`,
+`forbidden_tools`, `tool_order`, `citations`, `obs_contains`, `obs_forbids`,
+`final_contains`, `final_forbids`, `trace_present`, `prompt_tokens` — and
+every one is a deterministic string/set comparison. There is no LLM judge
+on a step list.
+
+Two cases use a named fixture policy (`policy_name`) instead of the
+production script policy: `always_retrieve` (drives the `max_steps` cap
+with `settings_override: {"max_steps": 1}`) and `unknown_tool` (emits a
+tool name outside the allowlist). Those fixtures live in
+`orch/script_policy.FIXTURE_POLICIES`; the eval runner has no hidden ifs.
+
+**The mutation that proves the gate works.** Editing
+`config/orchestrator.yaml` to `max_steps: 1`:
+
+| | default (`max_steps: 6`) | mutation (`max_steps: 1`) |
+|---|---|---|
+| passed | 12/12 | **1/12** |
+| pass_rate | 1.000 | **0.083** |
+| `gate_trajectory_pass_rate` | PASS | **FAIL** (exit 1) |
+
+Every happy-path case flips while `stop_reason` stays `done` — the
+orchestrator still stops "successfully", it just never runs a tool. Only
+the tool-presence and observation constraints catch that. A
+final-answer-only eval scores the mutation 12/12.
+
 ## Next Slice
 
-Stop — the second trio is closed (tracer, router, cache). Proposed later work, not
-started: a bounded orchestrator, sandboxed tools, and trajectory cases in this harness.
+Stop. ContextLab 01–09 is a complete teaching system: retrieve → pack →
+eval → trace → route → cache → bounded loop → sandbox → trajectory gates.
+
+Proposed later work, only if a named failure justifies it: prompt
+registry, streaming proxy, MCP, durable checkpoints.

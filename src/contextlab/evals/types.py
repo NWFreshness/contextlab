@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class EvalCase(BaseModel):
     """A single golden eval case."""
     id: str
-    suite: str  # retrieval | assembly | answer
+    suite: str  # retrieval | assembly | answer | trajectory | ...
     query: str
     relevant_chunk_ids: list[str] = Field(default_factory=list)
     relevant_doc_ids: list[str] = Field(default_factory=list)
@@ -22,6 +22,44 @@ class EvalCase(BaseModel):
     memory_items: list[dict] = Field(default_factory=list)
     tool_results: list[dict] = Field(default_factory=list)
     invariants: list[str] = Field(default_factory=list)
+
+
+class TrajectoryCase(EvalCase):
+    """Slice 9 — golden row for trajectory grading.
+
+    Additive fields; defaults keep Slices 3–6 suites parsing unchanged
+    when an old row reaches this loader (they don't, but a typo here
+    shouldn't break an unrelated suite).
+
+    `policy_name` selects a fixture policy from `script_policy.fixtures`
+    when present (`always_retrieve`, `unknown_tool`, `arithmetic_only`,
+    `identifier_only`). `tools` overrides the orchestrator's registered
+    tools. `settings_override` merges into `OrchRequest.settings` so a
+    case can shrink `max_steps`, change `retrieve_k`, etc.
+
+    Constraints are interpreted by `graders_trajectory`. Each constraint
+    is independent — a case fails if any of its active checks fail.
+    """
+
+    suite: str = "trajectory"
+    # Per-case knobs (override the orchestrator defaults)
+    policy_name: str = ""                   # empty = the production ScriptedPolicy
+    driver: str = "script"                  # script (default) | llm | fixture
+    tools: list[str] = Field(default_factory=list)  # override OrchRequest.tools
+    settings_override: dict = Field(default_factory=dict)
+    # Constraint fields
+    expected_stop_reasons: list[str] = Field(default_factory=lambda: ["done"])
+    max_steps_cap: Optional[int] = None      # explicit cap; <= orchestrator max_steps
+    required_tools: list[str] = Field(default_factory=list)
+    forbidden_tools: list[str] = Field(default_factory=list)
+    tool_order_strict: bool = False
+    required_observation_substrings: list[str] = Field(default_factory=list)
+    forbidden_observation_substrings: list[str] = Field(default_factory=list)
+    required_final_answer_substrings: list[str] = Field(default_factory=list)
+    forbidden_final_answer_substrings: list[str] = Field(default_factory=list)
+    needs_llm: bool = False                 # skip offline runs
+    # Case type — used by the gate to identify happy-path cases
+    case_type: str = "happy"                 # happy | max_steps | unknown_tool | policy | timeout
 
 
 class CheckResult(BaseModel):

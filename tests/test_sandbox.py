@@ -236,19 +236,38 @@ class TestSandboxedExecutor:
         assert payload["code"] == "policy"
         assert "division" in payload["error"].lower()
 
-    def test_unknown_tool_returns_error_result(self, executor):
-        """Unknown tools do NOT raise — they return a structured error.
+    def test_unknown_tool_propagates_to_orchestrator(self, executor):
+        """Unknown tools raise `UnknownToolError` so the orchestrator stops
+        with `stop_reason=unknown_tool`.
 
-        `UnknownToolError` is reserved for the orchestrator's stop_reason
-        wiring (Slice 7). The brief's policy gate catches unregistered
-        tools at the executor level and reports them via ToolResult so
-        the trajectory shows what happened. The orchestrator still gets
-        UnknownToolError when *its* dispatch fails, which is the path
-        the existing tests pin.
+        Slice 9's trajectory suite relies on this propagation — a
+        fixture policy that calls an unregistered tool must produce a
+        `stop_reason=unknown_tool` trajectory. `code=unknown_tool` is
+        also recorded on the `tool.exec` span so the trace tells the
+        full story.
         """
-        result = executor.run("does_not_exist", {})
-        payload = json.loads(result.content)
-        assert payload["code"] == ErrorCode.UNKNOWN_TOOL
+        from contextlab.orch.executor_inprocess import UnknownToolError
+
+        with pytest.raises(UnknownToolError):
+            executor.run("does_not_exist", {})
+
+    def test_unknown_tool_span_records_code(self, executor):
+        """`code=unknown_tool` lands on the span before the exception
+        propagates, so the trace tree is complete."""
+        from contextlab.orch.executor_inprocess import UnknownToolError
+        from contextlab.trace import InMemoryExporter, configure, reset, start_trace
+
+        reset()
+        exporter = InMemoryExporter()
+        configure(exporter=exporter)
+
+        with start_trace("test"):
+            with pytest.raises(UnknownToolError):
+                executor.run("does_not_exist", {})
+
+        records = [r for r in exporter.records if r.name == "tool.exec"]
+        assert len(records) == 1
+        assert records[0].attributes.get("code") == "unknown_tool"
 
     def test_unknown_tool_at_orchestrator_level_still_raises(self, test_limits):
         """`UnknownToolError` propagation is preserved for orch wiring.

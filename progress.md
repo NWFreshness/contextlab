@@ -536,3 +536,250 @@ orch.run            <duration> ms  ok
 ### Not done here (later slices, not started)
 - No trajectory eval suite (Slice 9 grades `artifacts/trajectories/*.json`).
 - The LLM driver is still a skip-safe stub from Slice 7.
+
+---
+
+# ContextLab — Slice 9 Progress (Trajectory Eval Suite)
+
+## Current Verified State
+```
+Date: 2026-09-15
+Status: COMPLETE ✓
+Default run:  python -m contextlab.evals run --suite trajectory --offline
+              12/12 passed  pass_rate 1.000  step_cap_violations 0  unknown_tool_on_happy_path 0
+              3/3 trajectory gates PASS
+Mutation run: config/orchestrator.yaml max_steps: 6 -> 1
+              1/12 passed  pass_rate 0.083  gate_trajectory_pass_rate FAIL  (exit 1)
+Slices 1-8 unchanged: 259 pytest passed; --suite all --offline 13/13 gates PASS.
+```
+
+### Done Criteria (from brief §1)
+- [x] `evals/trajectory_golden.jsonl` exists with t001 … t012 (12 cases, the
+      §5 table).
+- [x] `python -m contextlab.evals run --suite trajectory --offline` writes
+      results into the shared report (`artifacts/eval_report.json`, same
+      schema as Slice 3 — `suites.trajectory`, per-case `CaseResult` with
+      `trace_id`).
+- [x] `evals/gates.yaml` has a `trajectory` block that is enforced
+      (`min_pass_rate: 0.85`, `max_step_cap_violations: 0`,
+      `max_unknown_tool_on_happy_path: 0`); a failing gate exits 1.
+- [x] `pytest tests/test_traj_evals.py -q` covers grader helpers and a
+      fixture trajectory — 43 tests.
+- [x] Mutation experiment is in this file (below), before/after recorded.
+- [x] `--suite all --offline` includes trajectory and still runs
+      retrieval/assembly/router/cache (6 suites, 13 gates).
+
+### Mutation experiment (brief §6 / feat-j4)
+
+**Default (shipped config `max_steps: 6`):**
+
+| metric | value |
+|--------|-------|
+| trajectory cases | 12 |
+| passed | 12 |
+| pass_rate | **1.000** |
+| step_cap_violations | 0 |
+| unknown_tool_on_happy_path | 0 |
+| `gate_trajectory_pass_rate` | PASS (1.000 >= 0.85) |
+| `gate_trajectory_step_caps` | PASS (0 <= 0) |
+| `gate_trajectory_unknown_tool_happy` | PASS (0 <= 0) |
+| process exit | 0 (`=== EVAL PASSED ===`) |
+
+**Mutation (`config/orchestrator.yaml` → `max_steps: 1`):**
+
+| metric | value |
+|--------|-------|
+| trajectory cases | 12 |
+| passed | **1** |
+| pass_rate | **0.083** |
+| step_cap_violations | 0 |
+| unknown_tool_on_happy_path | 0 |
+| `gate_trajectory_pass_rate` | **FAIL** (0.083 >= 0.85) |
+| `gate_trajectory_step_caps` | PASS (0 <= 0) |
+| `gate_trajectory_unknown_tool_happy` | PASS (0 <= 0) |
+| process exit | 1 (`=== EVAL FAILED ===`) |
+
+Which cases flip, and why: **every happy-path case fails** (t001–t008, t011,
+t012) because the script policy's `last_step_action` fires a `finish` on
+step 0 before any tool runs — `stop_reason` is still `done`, but
+`required_tools` (retrieve / read_chunk / python_calc) never appeared and
+the observation-substring checks fail. t009 stays PASS because it
+*expects* `max_steps` — it is the cap case, so shrinking the cap is not a
+regression for it. t010 fails because the unknown-tool fixture never gets
+to emit its tool.
+
+Reading of the mutation: the suite's signal is carried by the
+**tool-presence and observation constraints**, not by `stop_reason` alone
+— a run can stop "successfully" (`done`) while having done nothing, and
+the graders catch that. That is the failure mode a trajectory suite exists
+to catch; a final-answer-only eval would have scored the mutation as 12/12
+passing (every `final_answer` is a string).
+
+The mutation was applied by editing `config/orchestrator.yaml`, running the
+suite, and restoring the file. `config/orchestrator.yaml` is back to
+`max_steps: 6` and re-verified (12/12, 3/3 gates PASS). No golden was
+tuned.
+
+### What was built
+- `evals/trajectory_golden.jsonl` — 12 cases (t001–t012) written as
+  **constraints**, not step dumps: `expected_stop_reasons`,
+  `max_steps_cap`, `required_tools`, `forbidden_tools`,
+  `tool_order_strict`, `expected_citations`,
+  `required/forbidden_observation_substrings`,
+  `required/forbidden_final_answer_substrings`, `policy_name`,
+  `settings_override`, `needs_llm`, `case_type`.
+- `src/contextlab/evals/types.py` — `TrajectoryCase(EvalCase)` with the
+  additive fields above. `EvalCase` untouched; Slices 3–6 goldens still
+  parse.
+- `src/contextlab/evals/graders_trajectory.py` — 12 deterministic graders
+  over a `Trajectory`: `stop_reason`, `step_cap`, `required_tools`,
+  `forbidden_tools`, `tool_order`, `citations`, `obs_contains`,
+  `obs_forbids`, `final_contains`, `final_forbids`, `trace_present`,
+  `prompt_tokens`. `grade()` runs all of them; a case passes when every
+  active check passes.
+- `src/contextlab/evals/suites_trajectory.py` — loads the golden file,
+  runs each case through `orch.orchestrate` (real sandbox + tracer),
+  attaches `trace_id`, aggregates the three gate metrics. Writes
+  trajectories to a per-run tmp dir so `artifacts/trajectories/` stays a
+  runtime path, not a checked-in artifact.
+- `src/contextlab/orch/script_policy.py` — `FIXTURE_POLICIES` registry
+  (`always_retrieve`, `unknown_tool`, `forbidden_calc`) plus
+  `build_fixture_policy(name)`. A case's `policy_name` selects one; empty
+  falls through to the production `ScriptedPolicy`. The brief allows this
+  registry; there are no hidden ifs in the eval runner. A fourth candidate
+  (`timeout`) was dropped: it would have called `sleep_forever`, which is
+  not in `config/sandbox.yaml`'s tool list, so it would have produced
+  `unknown_tool` rather than a timeout — a fixture that silently does the
+  wrong thing is worse than no fixture. Slice 8's
+  `test_timeout_kills_long_running` already exercises the real timeout path
+  end-to-end (subprocess + `TimeoutExpired`).
+- `src/contextlab/sandbox/executor.py` — one behavior change: the policy's
+  `unknown_tool` denial now raises `UnknownToolError` (it previously
+  returned a structured `ToolResult`). The orchestrator's Slice 7 catch
+  then maps it to `stop_reason=unknown_tool`, which is what t010 grades.
+  `code=unknown_tool` is still written to the `tool.exec` span.
+- `src/contextlab/evals/runner.py` + `evals/__main__.py` — `trajectory`
+  added to `--suite` choices, to the `all` list, and a `trajectory` branch
+  in `apply_gates`.
+- `evals/gates.yaml` — the `trajectory` block.
+- `tests/test_traj_evals.py` — 43 tests: a grader class per check (pass +
+  fail), `_referenced_chunk_ids` extraction, the fixture-policy registry,
+  and an end-to-end suite smoke (12 cases, t005 uses `python_calc`, t009
+  caps, t010 stop reason).
+- `feature_list.json` — `feat-j1` … `feat-j5` (done).
+- `AGENTS.md` — Slice 9 listed under "What", verify lines under
+  "Run / Verify", four Slice 9 hard bans added.
+
+### Real run output (default)
+```
+=== Eval Summary ===
+  trajectory: 12/12 passed
+    n_total: 12
+    n_pass: 12
+    n_fail: 0
+    n_skip: 0
+    pass_rate: 1.000
+    case_types: {'happy': 9, 'max_steps': 1, 'unknown_tool': 1, 'policy': 1}
+    step_cap_violations: 0
+    unknown_tool_on_happy_path: 0
+Gates:
+  [PASS] gate_trajectory_pass_rate: pass_rate=1.000 >= 0.85
+  [PASS] gate_trajectory_step_caps: step_cap_violations=0 <= max=0
+  [PASS] gate_trajectory_unknown_tool_happy: unknown_tool_on_happy_path=0 <= max=0
+
+=== EVAL PASSED ===
+```
+
+### Real per-case detail (default run, excerpts)
+```
+t001 stop_reason PASS stop_reason='done' expected=['done']
+     required_tools PASS required=['retrieve'] seen=['retrieve','read_chunk']
+     citations PASS expected=[error_codes::c0002, …] overlap=[incident_runbook::c0004, …]
+t005 required_tools PASS required=['python_calc'] seen=['python_calc']
+     forbidden_tools PASS forbidden=['retrieve'] found=[]
+     obs_contains PASS required=['14'] missing=[]          output: 14
+t009 stop_reason PASS stop_reason='max_steps' expected=['max_steps']
+     step_cap PASS n_steps=1 cap=1 (orch_max_steps=1)
+t010 stop_reason PASS stop_reason='unknown_tool' expected=['unknown_tool']
+t011 obs_contains PASS required=['policy','disallowed'] missing=[]
+```
+
+### Spot checks (brief §7)
+1. **t001 citations resolve to real chunk_ids.** Every chunk_id referenced
+   by any trajectory in the run was checked against `data/chunks.jsonl`
+   (34 ids): zero bogus ids. t001 references `incident_runbook::c0004`
+   and `error_codes::c0002`, both real.
+2. **t005 does not skip calc when the sandbox backend is subprocess.**
+   `required_tools=['python_calc']` passes, `forbidden_tools=['retrieve']`
+   passes (no fallback), `obs_contains=['14']` passes, `output: 14`. The
+   `tool.exec` span shows `sandbox=true backend=subprocess`.
+3. **Mutation report exists; goldens were not tuned.** The table above is
+   the record; `config/orchestrator.yaml` is restored and re-verified.
+
+### Findings and judgment calls (all written down)
+1. **Grade what the trajectory *referenced*, not `trajectory.citations`.**
+   For an orch run the assembler is called with `retrieve=False` and
+   `tools=observations`, so `AssembledContext.citations` is empty — the
+   retrieval-branch-only citation logic in Slice 2 (`assemble.py:211-216`)
+   never runs. `graders_trajectory._referenced_chunk_ids` therefore reads
+   both `read_chunk` action args and the `chunk_id`/`hits[*].chunk_id`
+   fields out of observation payloads. That is the stable definition and
+   it is documented on the function.
+2. **`unknown_tool` had to be raised, not returned.** Slice 8's executor
+   encoded every policy denial as a `ToolResult`, so a fixture calling
+   `shell` produced six observations and `stop_reason=done`. The
+   orchestrator only maps `UnknownToolError` to `stop_reason=unknown_tool`,
+   so the `unknown_tool` code path was unreachable from the sandboxed
+   executor. Fixed in `SandboxedExecutor.run` (raise for that one code);
+   `test_sandbox.py::test_unknown_tool_propagates_to_orchestrator` and
+   `…_span_records_code` pin it, and `test_unknown_tool_at_orchestrator_level_still_raises`
+   keeps the in-process path pinned.
+3. **`max_steps` precedence is explicit.** `suites_trajectory._build_request`
+   resolves the cap as: case `settings_override.max_steps` (floored by) the
+   global `CONTEXTLAB_ORCH_MAX_STEPS` env or `config/orchestrator.yaml`.
+   Without that ordering, editing the config would have had no effect on
+   the suite and the mutation would have been a no-op — which is exactly
+   what the first mutation attempt showed (`12/12 passed` with
+   `max_steps: 1`). Recorded because it is the kind of silent no-op that
+   makes a "mutation experiment" meaningless.
+4. **Constraint goldens, not step dumps.** A row asserts what must be
+   true; it does not replay a recorded step list. Adding a hit to
+   retrieve, or reordering two independent tool calls, does not break a
+   case. The two fixture-shaped cases that could have been snapshot tests
+   (t009 cap, t010 unknown tool) are also constraint rows.
+5. **Trajectories written to a per-run tmp dir.** `run_suite` defaults
+   `trajectory_dir` to `tempfile.mkdtemp(prefix="traj-evals-")` so a suite
+   run does not accumulate files in `artifacts/trajectories/` (that path
+   is gitignored and used by the CLI). Passing `trajectory_dir=` explicitly
+   keeps the artifacts for inspection, which the tests do.
+6. **`needs_llm` cases skip, they do not fail.** `offline=True` (the
+   default and the only verified mode) records a `needs_llm` check that
+   passes with `skipped`. No case in the shipped 12 sets it — the whole
+   set is script-driver — but the field is wired so a future LLM-driver
+   case does not break CI.
+7. **The suite is 12 cases, no filler.** t001–t012 map one-to-one onto the
+   brief's §5 table. t007 (identifier + calc in one query) was implemented
+   as the brief's sanctioned alternative — a paraphrase of E-4471 — because
+   the script policy has no combined branch; the case's `notes` says so.
+   t011 likewise takes the brief's **policy** option over the timeout
+   option: a fixture calls `python_calc` with an AST-rejected expression
+   and the case asserts `obs_contains: ["policy", "disallowed"]`. The
+   timeout path is not reproducible through the eval surface without
+   registering `sleep_forever` in `config/sandbox.yaml`, which would put a
+   test fixture in production config; it stays covered by Slice 8's
+   `test_timeout_kills_long_running` instead.
+8. **Hard ban check.** No step-dump goldens checked in. No LLM judge on
+   tool order — every grader is a string/set comparison. No multi-agent
+   case. The sandbox timeout tests were not touched (Slice 8's 35 tests
+   still pass, one renamed assertion aside). Every case runs through
+   `orch.orchestrate`, not a re-graded JSON file.
+
+### The third trio is closed
+retrieve → pack → eval → trace → route → cache → bounded loop → sandbox →
+trajectory gates. Slice 9's mutation is recorded above.
+
+### Not done here (later, not started)
+- Prompt registry, streaming proxy, MCP, durable checkpoints — only if a
+  named failure justifies one.
+- The LLM driver is still a skip-safe stub from Slice 7; `needs_llm` cases
+  are wired but unwritten.
