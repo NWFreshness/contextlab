@@ -9,6 +9,9 @@ artifacts/eval_20*.json
 # Slice 7 — orchestrator trajectories (runtime artifacts, regenerated per run)
 artifacts/trajectories/
 
+# Slice 8 — sandbox per-run workdirs (regenerated each tool call)
+data/sandbox_work/
+
 # ── python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]

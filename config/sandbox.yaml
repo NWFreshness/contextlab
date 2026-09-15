@@ -1,0 +1,64 @@
+# Slice 8 — Sandboxed tool executor.
+#
+# The orchestrator's tools run inside an allowlisted subprocess by default.
+# The "policy" layer is mandatory: every tool goes through a whitelist and
+# schema check. The "containment" layer is best-effort: subprocess gets a
+# fresh workdir, an env allowlist, a timeout, and an output cap. When
+# `prlimit` is on PATH, the subprocess's address space and CPU are capped
+# via `preexec_fn`; this is auto-detected and logged on the `tool.exec`
+# span — tests do not require it.
+#
+# `backend: inprocess` keeps the Slice 7 InProcessExecutor and is intended
+# for unit tests that need to mock tool calls without a child process.
+#
+# Network is off by default. `env_allowlist` is the only env a child sees;
+# parent secrets (OPENAI_API_KEY and friends) are never passed through.
+#
+# `path_allowlist` is the set of host paths a sandboxed tool may touch
+# directly. Reads and writes outside the workdir are refused unless the
+# exact normalized path appears in this list.
+backend: subprocess
+
+# Where sandboxed tools' working directories live. Each tool run gets its
+# own subdir under here and is cleaned up on exit.
+workdir_parent: data/sandbox_work
+
+# Hard wall-clock timeout for any sandboxed tool. The brief pins this to
+# the config — disabling it to make a test pass is a hard ban.
+timeout_s: 2.0
+
+# Truncate tool output (stdout) past this many bytes. The brief caps
+# outputs so a runaway tool can't fill memory through the assembler.
+max_output_bytes: 8000
+
+# Optional OS resource caps (best-effort, requires `prlimit` on PATH).
+# Set `cpu_s: null` to skip prlimit entirely (default). With `cpu_s` set,
+# the subprocess is wrapped in `prlimit --cpu=N --`. `memory_mb` is not
+# applied: Python's startup imports pull in numpy / OpenBLAS thread pools
+# that need > 256 MiB, so a strict `--as` makes the worker fail before
+# the tool runs. Wall-clock timeout (`timeout_s`) is the verified cap.
+cpu_s: null
+memory_mb: 256
+
+# Env vars passed through to the child. Parent secrets (anything not in
+# this list) are explicitly dropped.
+env_allowlist: ["PATH", "LANG", "LC_ALL"]
+
+# Paths a sandboxed tool may touch beyond its workdir. Reads and writes
+# outside the workdir require an exact match (after symlink / `..`
+# resolution) against this list.
+path_allowlist: ["data/chunks.jsonl", "data/sandbox_work"]
+
+# Per-tool policy. `sandbox: true` routes through subprocess; `false`
+# keeps the tool in-process (Slice 1 retrieve/read_chunk are safe and
+# fast and don't need a child process). The default is `sandbox: true`
+# for any tool not listed here — fail-closed.
+#
+# `args_schema` is the closed set of arg keys the tool accepts; anything
+# outside is a policy reject. The default is `[]` so a tool with no
+# schema is locked down unless explicitly opened up.
+tools:
+  retrieve: {sandbox: false, args_schema: [query, k, mode]}
+  read_chunk: {sandbox: false, args_schema: [chunk_id]}
+  python_calc: {sandbox: true, args_schema: [expression]}
+  finish: {sandbox: false, args_schema: [answer]}

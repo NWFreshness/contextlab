@@ -8,6 +8,7 @@
 - **Slice 5 (done)**: Model router — yaml policy (cheap/strong/fallback), `router.decide` spans, dry-run route gate
 - **Slice 6 (done)**: Semantic cache — similarity + settings fingerprint + meaning guards, hit/false-hit gates
 - **Slice 7 (done)**: Bounded agent orchestrator — `for step in range(max_steps)`, scripted + llm drivers, `orch.run`/`orch.step` spans, trajectory JSON per run
+- **Slice 8 (done)**: Sandboxed tool executor — policy gate (allowlist, schema, path jail, env allowlist), `python_calc` AST eval in subprocess, wall-clock timeout, `tool.exec` spans, `prlimit` opt-in
 
 ## Run / Verify
 ```bash
@@ -46,6 +47,12 @@ pytest tests/test_orch.py -q
 python -m contextlab.orch run --query "what does E-4471 mean" --driver script
 python -m contextlab.trace show --last   # orch.run + orch.step tree
 
+# Slice 8 — sandbox
+pytest tests/test_sandbox.py -q
+python -m contextlab.orch run --query "what is 2*(3+4)" --driver script   # python_calc
+python -m contextlab.orch run --query "what does E-4471 mean" --driver script  # retrieve + read_chunk
+python -m contextlab.trace show --last   # orch.run / orch.step / tool.exec tree
+
 # Root verify (--suite all runs retrieval, assembly, answer, router, cache)
 pytest -q && python -m contextlab.evals run --suite all --offline && python -m contextlab.trace show --last
 ```
@@ -58,6 +65,7 @@ Trace: feat-t1 … feat-t5 (done)
 Router: feat-m1 … feat-m5 (done)
 Cache: feat-c1 … feat-c5 (done)
 Orchestrator: feat-o1 … feat-o5 (done)
+Sandbox: feat-s1 … feat-s5 (done)
 
 ## Hard Bans
 - No LangChain / LlamaIndex / Haystack
@@ -79,3 +87,8 @@ Orchestrator: feat-o1 … feat-o5 (done)
 - No `while True` without a tested cap (Slice 7: `for step in range(max_steps)`)
 - No LangGraph / LangChain / CrewAI / AutoGen — Slice 7 is a state machine, not a framework
 - No shell / HTTP / file-write tool in Slice 7 (the tool list lives in `config/orchestrator.yaml`)
+- No general `shell` or `python -c` tool (Slice 8 hard ban); `python_calc` is the only sandboxed tool
+- No `eval()` on raw strings in Slice 8 — only AST whitelisted arithmetic
+- No inheriting the parent env wholesale — `env_allowlist` in `config/sandbox.yaml` is the only env a child sees
+- No Docker / required external runtime — Slice 8's subprocess backend must work without it; `prlimit` is opt-in
+- No disabling the timeout to make a test pass (Slice 8 hard ban)

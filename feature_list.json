@@ -258,6 +258,41 @@
       "status": "done",
       "verify_command": "pytest tests/test_orch.py -q -k llm or driver",
       "notes": "LlmPolicy(client=None) returns Action.fail('llm driver not configured'). One JSON-parse retry max; tests pass without a key. Slice 8 will swap the executor behind the same protocol, not the policy."
+    },
+    {
+      "id": "feat-s1",
+      "name": "Sandbox policy gate",
+      "status": "done",
+      "verify_command": "pytest tests/test_sandbox.py::TestSandboxPolicy -q",
+      "notes": "SandboxPolicy.check: unknown_tool -> ToolError; args outside args_schema -> policy reject; path args resolved and checked against path_allowlist after `..` normalization. Env allowlist drops parent secrets (OPENAI_API_KEY, etc.)."
+    },
+    {
+      "id": "feat-s2",
+      "name": "AST calc evaluator",
+      "status": "done",
+      "verify_command": "pytest tests/test_sandbox.py::TestCalcEvaluator -q",
+      "notes": "ast.parse + walk; only Expression, BinOp, UnaryOp, Constant numbers, + - * / // % ** allowed. Names, attribute access, calls, subscripts, comprehensions all rejected. `2*(3+4)` -> 14; `__import__('os')` -> CalcError(disallowed syntax: Name)."
+    },
+    {
+      "id": "feat-s3",
+      "name": "Subprocess executor + timeout",
+      "status": "done",
+      "verify_command": "pytest tests/test_sandbox.py::TestSandboxedExecutor::test_timeout_kills_long_running -q",
+      "notes": "subprocess.run with cwd=tmp workdir, env=allowlist, stdin=DEVNULL, timeout=timeout_s. TimeoutExpired -> code=timeout in < 5s wall clock. prlimit is opt-in (cpu_s); AS limit intentionally not used because Python's startup imports trigger OpenBLAS at < 256 MiB."
+    },
+    {
+      "id": "feat-s4",
+      "name": "Env and path non-leak tests",
+      "status": "done",
+      "verify_command": "pytest tests/test_sandbox.py -q -k 'env_non_leak or path_jail'",
+      "notes": "Parent OPENAI_API_KEY never appears in child env (env_allowlist=strict). read_secret with BRIEF.md / ../../etc/passwd is denied before the worker is launched (policy gate)."
+    },
+    {
+      "id": "feat-s5",
+      "name": "Wire orchestrator + traces",
+      "status": "done",
+      "verify_command": "python -m contextlab.orch run --query 'what is 2*(3+4)' --driver script",
+      "notes": "Default executor = SandboxedExecutor (backend: subprocess from config/sandbox.yaml). tool.exec span registered in trace/types.py. Script policy Rule -1 routes pure-arithmetic queries to python_calc; E-4471 still hits retrieve/read_chunk."
     }
   ]
 }

@@ -13,4 +13,4 @@
 # `unknown_tool` and stops the run.
 max_steps: 6
 driver: script
-tools: [retrieve, read_chunk, finish]
+tools: [retrieve, read_chunk, python_calc, finish]

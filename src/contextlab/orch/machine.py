@@ -94,10 +94,17 @@ def orchestrate(
     """
     # ── Defaults ─────────────────────────────────────────────────────────
     if executor is None:
-        from contextlab.orch.executor_inprocess import InProcessExecutor
-        executor = InProcessExecutor(
-            registered_tools=list(request.tools),
+        from contextlab.sandbox import SandboxLimits, SandboxedExecutor, load_sandbox_config
+
+        limits = SandboxLimits.model_validate(
+            # Honor env override (CONTEXTLAB_SANDBOX_BACKEND) for tests.
+            {**load_sandbox_config().model_dump(mode="json")}
         )
+        # `backend: inprocess` is the unit-test escape hatch — Slice 8's
+        # verified default is `subprocess`. The SandboxedExecutor still
+        # wraps the in-process helpers with the policy gate, so unknown
+        # tools / path jail / arg schema are enforced either way.
+        executor = SandboxedExecutor(limits=limits)
     if policy is None:
         policy = _build_policy(request, executor=executor)
 

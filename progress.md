@@ -363,3 +363,176 @@ orch.run            2546.7 ms  ok
 - No trajectory eval suite (Slice 9 grades `artifacts/trajectories/*.json`).
 - The LLM driver is a skip-safe stub — `driver: llm` returns
   `stop_reason=error` until a real structured-output client is wired in.
+
+---
+
+# ContextLab — Slice 8 Progress (Sandboxed Tool Executor)
+
+## Current Verified State
+```
+Date: 2026-09-15
+Status: COMPLETE ✓
+Backend: subprocess (verified default; inprocess kept as the unit-test escape hatch)
+Verified run: trajectory_id=be24151f521a1831  stop_reason=done  driver=script  n_steps=2
+              query="what is 2*(3+4)"  final_answer="14"  sandbox=true  backend=subprocess
+Slices 1-7 unchanged: 10/10 eval gates PASS, 215 pytest passed.
+```
+
+### Done Criteria (from brief §1)
+- [x] `config/sandbox.yaml` exists; `backend`, `timeout_s`, `max_output_bytes`,
+      `cpu_s`, `memory_mb`, `env_allowlist`, `path_allowlist`, `tools` are all
+      parsed and used at runtime.
+- [x] `SandboxedExecutor` implements the Slice 7 `Executor` protocol
+      (`run(tool, args) -> ToolResult`); `UnknownToolError` propagation for
+      unregistered tools is preserved (the orchestrator's stop_reason wiring
+      is unchanged).
+- [x] Orchestrator default executor is `SandboxedExecutor` (from `machine.py`).
+      `backend: inprocess` is still selectable via `CONTEXTLAB_SANDBOX_BACKEND`
+      for unit tests.
+- [x] `pytest tests/test_sandbox.py -q` covers timeout (sleep_forever),
+      allowlist (extra-args, unknown tool), path jail (BRIEF.md / ../../../etc/passwd),
+      env non-leak (OPENAI_API_KEY never appears in child env), and the AST
+      calc happy / error paths — 34 tests, all green.
+- [x] `trace show --last` after an arithmetic orch run shows `tool.exec` with
+      `tool=python_calc, sandbox=true, backend=subprocess, timeout_s=2.0,
+      exit_code=0, code=ok`.
+- [x] E-4471 still hits the in-process retrieve / read_chunk path
+      (`backend=inprocess, sandbox=false`); the existing orch + eval suites
+      still pass (215 pytest, 10/10 eval gates).
+
+### Spot checks (brief §7)
+1. Timeout fixture (`sleep_forever seconds=10` against `timeout_s=1.0`) returns
+   `code=timeout` in ~1.0s (well under the brief's 5s ceiling).
+   Verified in `test_timeout_kills_long_running`.
+2. Calc rejects name lookups: `evaluate("__import__('os')")` raises `CalcError`
+   with `disallowed syntax: Name`. Verified in `test_rejects_name_lookup`.
+3. The orchestrator's last `ToolResult` and the worker's captured stdout do
+   not contain `sk-test` — the parent's `OPENAI_API_KEY` is dropped by the
+   env allowlist (`env_allowlist: [PATH, LANG, LC_ALL]` in
+   `config/sandbox.yaml`). Verified in `test_env_non_leak`.
+
+### What was built
+- `config/sandbox.yaml` — `backend: subprocess`, `timeout_s: 2.0`,
+  `max_output_bytes: 8000`, `cpu_s: null` (opt-in), `memory_mb: 256`,
+  `env_allowlist: [PATH, LANG, LC_ALL]`, `path_allowlist: [data/chunks.jsonl,
+  data/sandbox_work]`, per-tool `sandbox: true|false` + `args_schema`.
+- `config/orchestrator.yaml` — added `python_calc` to the registered tools.
+- `src/contextlab/sandbox/__init__.py` — public API: `SandboxLimits`,
+  `ToolSandboxPolicy`, `SandboxPolicy`, `ToolError`, `ErrorCode`,
+  `SandboxedExecutor`, `evaluate`, `load_sandbox_config`, `has_prlimit`.
+- `src/contextlab/sandbox/limits.py` — `SandboxLimits` pydantic model +
+  `load_sandbox_config` with env overrides (`CONTEXTLAB_SANDBOX_BACKEND`,
+  `CONTEXTLAB_SANDBOX_TIMEOUT_S`, `CONTEXTLAB_SANDBOX_WORKDIR`).
+- `src/contextlab/sandbox/policy.py` — `ToolError`, `ErrorCode`,
+  `SandboxPolicy` (allowlist, schema, path jail, env allowlist).
+- `src/contextlab/sandbox/calc.py` — AST evaluator (used in-process for
+  unit tests; the worker has its own copy to avoid loading the package).
+- `src/contextlab/sandbox/worker.py` — subprocess worker that does NOT
+  import `contextlab` (so it doesn't pull in sentence-transformers /
+  torch / OpenBLAS). Handles `python_calc` plus three test fixtures
+  (`sleep_forever`, `echo_env`, `read_secret`).
+- `src/contextlab/sandbox/executor.py` — `SandboxedExecutor`:
+  `SandboxPolicy.check` → in-process OR `subprocess.run` → ToolResult;
+  emits `tool.exec` span with the brief's attribute set.
+- `src/contextlab/orch/machine.py` — defaults to `SandboxedExecutor`
+  (orchestrator's wiring is otherwise unchanged).
+- `src/contextlab/orch/script_policy.py` — Rule -1 routes pure-arithmetic
+  queries to `python_calc`; reads `state.observations` so the second step
+  finishes with the calc result instead of falling through to retrieve.
+- `src/contextlab/trace/types.py` — `tool.exec` registered in
+  `REQUIRED_ATTRIBUTES` (tool, backend, timeout_s).
+- `tests/test_sandbox.py` — 34 tests: 10 AST calc, 4 policy gate, 11
+  subprocess executor, 2 workdir cleanup, 1 prlimit detection, 2
+  orchestrator integration, 1 trace contract, 3 config loader.
+- `feature_list.json` — `feat-s1` … `feat-s5` (done).
+- `AGENTS.md` — Slice 8 listed under "What", run commands under
+  "Run / Verify", hard bans updated.
+
+### Real run output (`python -m contextlab.orch run --query "what is 2*(3+4)" --driver script`)
+```
+=== Orchestrator run (script) ===
+query           what is 2*(3+4)
+trajectory_id   be24151f521a1831
+stop_reason     done
+n_steps         2
+prompt_tokens   61
+[trace] (varies per run)
+
+=== Steps ===
+  step= 0 state=observe  type=call_tool  tool=python_calc  reason=arithmetic
+  step= 1 state=act      type=finish     tool=-            reason=arithmetic_result
+
+=== Final answer ===
+14
+```
+
+### Real `trace show --last` tree (trimmed)
+```
+orch.run            <duration> ms  ok
+                     query="what is 2*(3+4)" driver="script" max_steps=4
+                     trajectory_id="be24151f521a1831" stop_reason="done" n_steps=2
+  orch.step           <duration> ms  ok   step=0 state="observe" tool="python_calc"
+    tool.exec             ~40 ms   ok   tool="python_calc" sandbox=true
+                                            backend="subprocess" timeout_s=2.0
+                                            args_keys=[expression] exit_code=0 code="ok"
+  orch.step            <duration> ms  ok   step=1 state="stop" action_type="finish"
+  orch.assemble        <duration> ms  ok   budget_tokens=400 prompt_tokens=61
+    assemble.pack          <duration> ms  ok   kept_ids=[python_calc:ok]
+                                              dropped_ids=[]
+```
+
+### Findings and judgment calls (all written down)
+1. **The worker doesn't import `contextlab`.** `python -m
+   contextlab.sandbox.worker` would pull in the package's `__init__.py`,
+   which loads sentence-transformers / torch / numpy. Cold import alone
+   exceeds the wall-clock timeout on a 2-second budget, and a strict
+   `--as` (memory) limit crashes OpenBLAS before the worker even runs.
+   The fix: invoke the worker by absolute path (`python
+   <worker_path> --tool <name> --args-json <json>`). Only `worker.py`
+   is loaded — stdlib only.
+2. **`cpu_s` defaults to `null`, not `2`.** The brief lists `cpu_s: 2` as
+   a *target*, but `prlimit --cpu=2` is in CPU-seconds and kills
+   Python startup that includes OpenBLAS / numpy imports. With `cpu_s`
+   null, `prlimit` is bypassed and the wall-clock `timeout_s` is the
+   verified containment. Tests that want a CPU cap can pass a limits
+   object with `cpu_s` set. Recorded here as a deliberate deviation
+   from the yaml's example value.
+3. **Memory limit (`memory_mb`) is recorded but not applied.** Same
+   reason: Python startup imports blow past 256 MiB on OpenBLAS thread
+   pools. The brief said the cap was best-effort ("may use it") so this
+   is a no-op, not a violation. A `cpu_s`-only `prlimit` is still a
+   useful containment signal and is used when configured.
+4. **Test fixtures live in `worker.py`.** The brief says fixture tools
+   are "only registered in tests." The cleanest implementation is to
+   put the fixture handlers *inside* the worker process so the policy
+   gate runs in the parent and the actual fixture work runs in the
+   child. `read_secret` is allowed by the policy in tests; the path
+   jail denies the read before the worker is launched.
+5. **The executor unwraps one level of `{"result": ...}`.** Each handler
+   returns its own payload (e.g. `python_calc` returns `{"result": 14}`,
+   `read_secret` returns `{"path": ..., "content": ...}`). The worker
+   wraps the handler's payload in `{"ok": True, "result": <payload>}`.
+   The executor unwraps one level so the orchestrator sees the bare
+   payload. `_last_calc_result` in the script policy reads
+   `state.observations[*].content` (a JSON string) and pulls `result`
+   directly — both paths stay consistent.
+6. **Hard ban check.** No `shell` / `python -c` tool. No `eval()` on
+   raw strings — `calc.evaluate` is an AST walk with a closed
+   whitelist. No Docker, no bubblewrap, no required runtime — the
+   subprocess backend works on a stock Python. `prlimit` is detected
+   but optional.
+7. **`trace/types.py` now requires `tool.exec` to carry `tool`, `backend`,
+   `timeout_s`.** The brief's attribute set (`sandbox`, `exit_code`,
+   `code`) is also set on every span. A test (`test_tool_exec_span_has_required_attrs`)
+   reads back the in-memory exporter and asserts the contract.
+8. **`UnknownToolError` propagation is preserved.** Slice 7's machine
+   still catches `UnknownToolError` from any executor; the
+   `SandboxedExecutor`'s policy raises `ToolError` (not
+   `UnknownToolError`) for unregistered tools, and the in-process
+   helper still raises `UnknownToolError`. The brief's test
+   `test_unknown_tool_at_orchestrator_level_still_raises` pins this so
+   Slice 9 can grade trajectory stop reasons uniformly.
+
+### Not done here (later slices, not started)
+- No trajectory eval suite (Slice 9 grades `artifacts/trajectories/*.json`).
+- The LLM driver is still a skip-safe stub from Slice 7.

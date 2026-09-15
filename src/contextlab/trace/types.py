@@ -26,6 +26,7 @@ REQUIRED_ATTRIBUTES: dict[str, tuple[str, ...]] = {
     "router.decide": ("route", "model", "reason", "intent_hint", "has_identifier", "dry_run"),
     "cache.lookup": ("hit", "score", "reason"),
     "cache.write": ("cache_id",),
+    "tool.exec": ("tool", "backend", "timeout_s"),
 }
 
 
