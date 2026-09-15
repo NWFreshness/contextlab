@@ -7,6 +7,7 @@
 - **Slice 4 (done)**: LLM tracer — OpenTelemetry-shaped spans per hop, JSONL store, `trace show`
 - **Slice 5 (done)**: Model router — yaml policy (cheap/strong/fallback), `router.decide` spans, dry-run route gate
 - **Slice 6 (done)**: Semantic cache — similarity + settings fingerprint + meaning guards, hit/false-hit gates
+- **Slice 7 (done)**: Bounded agent orchestrator — `for step in range(max_steps)`, scripted + llm drivers, `orch.run`/`orch.step` spans, trajectory JSON per run
 
 ## Run / Verify
 ```bash
@@ -40,6 +41,11 @@ python -m contextlab.cache seed --from-evals
 python -m contextlab.evals run --suite cache --offline
 python -m contextlab.cache stats
 
+# Slice 7 — orchestrator
+pytest tests/test_orch.py -q
+python -m contextlab.orch run --query "what does E-4471 mean" --driver script
+python -m contextlab.trace show --last   # orch.run + orch.step tree
+
 # Root verify (--suite all runs retrieval, assembly, answer, router, cache)
 pytest -q && python -m contextlab.evals run --suite all --offline && python -m contextlab.trace show --last
 ```
@@ -51,6 +57,7 @@ Eval: feat-e1 … feat-e5 (done)
 Trace: feat-t1 … feat-t5 (done)
 Router: feat-m1 … feat-m5 (done)
 Cache: feat-c1 … feat-c5 (done)
+Orchestrator: feat-o1 … feat-o5 (done)
 
 ## Hard Bans
 - No LangChain / LlamaIndex / Haystack
@@ -69,3 +76,6 @@ Cache: feat-c1 … feat-c5 (done)
 - No LLM-as-judge for cache hits — guards are deterministic token logic
 - No Redis/memcached as a required dependency (local JSONL store)
 - Do not relax the must-miss gate to make a threshold look good
+- No `while True` without a tested cap (Slice 7: `for step in range(max_steps)`)
+- No LangGraph / LangChain / CrewAI / AutoGen — Slice 7 is a state machine, not a framework
+- No shell / HTTP / file-write tool in Slice 7 (the tool list lives in `config/orchestrator.yaml`)

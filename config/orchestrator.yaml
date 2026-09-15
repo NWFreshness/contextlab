@@ -1,0 +1,16 @@
+# Slice 7 — Bounded agent orchestrator.
+#
+# A single-machine driver that loops until the script policy emits a finish
+# (or fail) action, or the step cap is hit. The cap is a *successful* machine
+# stop (stop_reason=max_steps), not a crash — tests pin both the cap and the
+# scripted happy path.
+#
+# `driver` selects the policy module: `script` (deterministic, the verified
+# path) or `llm` (structured-output driver, skip-safe in offline tests).
+#
+# `tools` is the registry the InProcessExecutor will dispatch against. Adding
+# a tool here is a config change; an unknown tool from the policy raises
+# `unknown_tool` and stops the run.
+max_steps: 6
+driver: script
+tools: [retrieve, read_chunk, finish]

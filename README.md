@@ -32,6 +32,8 @@ Slice 1: corpus/*.md → chunking → chunks.jsonl → bm25_index + dense_index 
 Slice 2: assemble(request) → AssembledContext → prompt (token-budgeted, drop-report)
 Slice 3: evals/*.jsonl → suites → graders → gates → artifacts/eval_report.json
 Slice 4: every hop → spans (trace_id, parent_span_id, attributes) → data/traces/YYYYMMDD.jsonl
+Slice 5: route(request, signals) → config/router.yaml → Decision (cheap / strong / fallback)
+Slice 6: cache.lookup(query, fingerprint) → similarity + meaning guards → HIT / MISS → data/cache.jsonl
 ```
 
 ### Slice 1 — Retrieval

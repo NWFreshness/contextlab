@@ -220,3 +220,146 @@ decision; `evals/router_golden.jsonl` (19 cases) gated at `min_accuracy: 0.85`; 
 - Slice 3: eval harness — suites, gates, `artifacts/eval_report.json`.
 - Slice 4: tracer — OTel-shaped spans per hop, JSONL store, `trace show`; the refund `--budget 400` dump lives
   in the Slice 4 record (`assemble.pack` → `dropped_ids=[refund_policy_v3::c0000]`).
+
+---
+
+# ContextLab — Slice 7 Progress (Bounded Agent Orchestrator)
+
+## Current Verified State
+```
+Date: 2026-09-15
+Status: COMPLETE ✓
+Verified run: trajectory_id=5d95956c5e97b620  stop_reason=done  driver=script  n_steps=3
+Slices 1-6 unchanged: 10/10 eval gates PASS, 181 pytest passed.
+```
+
+### Done Criteria (from brief §1)
+- [x] `python -m contextlab.orch run --query "what does E-4471 mean" --driver script`
+      → step log + `stop_reason=done` + 3 steps + trajectory written
+- [x] `pytest tests/test_orch.py -q` covers max_steps cap, scripted happy path,
+      unknown_tool, inspectable state — 11 tests, all green
+- [x] Trajectory written to `artifacts/trajectories/<trajectory_id>.json`
+- [x] `trace show --last` shows `orch.run` with `orch.step` children + nested
+      `retrieve.hybrid` + `orch.assemble` → `assemble.pack`
+- [x] `--suite all --offline` still passes (10/10 gates, recall unchanged)
+- [x] `progress.md` includes trajectory id `5d95956c5e97b620` and `stop_reason=done`
+
+### Spot checks (brief §7)
+1. `--max-steps 4` on a policy that always calls `retrieve` → `stop_reason=max_steps`,
+   `len(steps)==4` (`test_max_steps_cap_fires_on_runaway_policy`).
+2. A fixture policy that picks `shell` (unregistered) → `stop_reason=unknown_tool`,
+   trajectory file written so Slice 9 can grade the failure path
+   (`test_unknown_tool_policy_stops_with_unknown_tool_reason`).
+3. After step 0, `state.model_dump()` round-trips through JSON and contains
+   the query, the step index, and `hits=[]`
+   (`test_state_is_serializable_after_each_step`).
+
+### What was built
+- `config/orchestrator.yaml` — `max_steps: 6`, `driver: script`, `tools: [retrieve, read_chunk, finish]`
+- `src/contextlab/orch/__init__.py` — public API: `orchestrate`, `ScriptedPolicy`,
+  `LlmPolicy`, `InProcessExecutor`, `Action`, `Step`, `State`, `Trajectory`,
+  `OrchRequest`, `UnknownToolError`
+- `src/contextlab/orch/state.py` — `Action`, `Step`, `State` (with `summary()` for
+  the LLM driver), `Trajectory`, `OrchRequest`, `load_orchestrator_config`
+  (env overrides: `CONTEXTLAB_ORCH_MAX_STEPS`, `CONTEXTLAB_ORCH_DRIVER`)
+- `src/contextlab/orch/action.py` — `Action` pydantic model + `ActionType` constants
+- `src/contextlab/orch/executor_inprocess.py` — `Executor` protocol + `InProcessExecutor`
+  (tools: `retrieve`, `read_chunk`). Unknown tool → `UnknownToolError` so the
+  machine can set `stop_reason=unknown_tool`.
+- `src/contextlab/orch/script_policy.py` — table-driven scripted policy; tracks
+  already-read chunks so it can't loop on Rule 1 (`_already_read(state, chunk_id)`)
+- `src/contextlab/orch/llm_policy.py` — skip-safe stub: returns
+  `Action.fail("llm driver not configured")` when `client=None`; one JSON-parse
+  retry when a client is provided
+- `src/contextlab/orch/machine.py` — the bounded loop (`for step in range(max_steps)`,
+  no `while True`); opens `orch.run` root trace, opens `orch.step` per iteration,
+  runs `assemble.pack` after the loop, persists the trajectory
+- `src/contextlab/orch/run.py` — `python -m contextlab.orch run` CLI; mirrors the
+  `route` CLI shape (stop_reason, n_steps, citations, trace id, step log)
+- `src/contextlab/orch/__main__.py` — module entry point
+- `tests/test_orch.py` — 11 tests: happy path, max_steps cap, unknown_tool,
+  state inspectability, executor contracts (read_chunk missing, unknown tool
+  raises, duck-typed protocol), policy termination, trajectory JSON round-trip
+- `feature_list.json` — `feat-o1` … `feat-o5` (done)
+- `AGENTS.md` — Slice 7 listed under "What", run command under "Run / Verify"
+
+### Real run output (`python -m contextlab.orch run --query "what does E-4471 mean" --driver script`)
+```
+=== Orchestrator run (script) ===
+query           what does E-4471 mean
+trajectory_id   5d95956c5e97b620
+stop_reason     done
+n_steps         3
+prompt_tokens   141
+[trace] (varies per run) — python -m contextlab.trace show --trace …
+
+=== Steps ===
+  step= 0 state=observe  type=call_tool  tool=retrieve     reason=no_hits
+  step= 1 state=observe  type=call_tool  tool=read_chunk   reason=identifier:E-4471
+  step= 2 state=act      type=finish     tool=-            reason=top_hit_extract
+
+=== Final answer ===
+If E-4471 persists after retry, escalate to L2 support with: …
+```
+
+### Real `trace show --last` tree (trimmed)
+```
+orch.run            2546.7 ms  ok
+                     query="what does E-4471 mean" driver="script" max_steps=6
+                     trajectory_id="5d95956c5e97b620" stop_reason="done"
+                     n_steps=3 n_citations=0 prompt_tokens=141
+  orch.step           2545.0 ms  ok   step=0 state="observe" tool="retrieve"
+    retrieve.hybrid        7.7 ms  ok   query=…  k=5  chunk_ids=[incident_runbook::c0004, …]
+      retrieve.bm25          0.4 ms  ok   …
+      retrieve.dense         7.0 ms  ok   …
+      retrieve.fuse          0.1 ms  ok   …
+  orch.step              0.3 ms  ok   step=1 state="observe" tool="read_chunk"
+  orch.step              0.0 ms  ok   step=2 state="stop"    action_type="finish"
+  orch.assemble          1.1 ms  ok   budget_tokens=800  prompt_tokens=141
+    assemble.pack          0.1 ms  ok   kept_ids=[read_chunk:incident_runbook::c0004]
+                                            dropped_ids=[retrieve:what does E-4471 mean]
+```
+
+### Findings and judgment calls (all written down)
+1. **The function is `orchestrate`, not `run`.** The brief specifies a
+   `src/contextlab/orch/run.py` for the CLI module; importing that file
+   binds `run` to the *module* in `contextlab.orch.__init__`. Renaming the
+   bounded-loop function to `orchestrate` keeps `from contextlab.orch import
+   run` resolving to the CLI module (the intent) while leaving a `run = orchestrate`
+   alias in `machine.py` for callers that want the function directly.
+2. **Loop termination on Rule 1.** The scripted policy's Rule 1
+   (`read_chunk` for the top hit when the query contains an identifier) needs
+   to short-circuit on a re-match of the same chunk, otherwise the machine
+   consumes the entire cap reading the same chunk repeatedly. `_already_read`
+   is a deterministic prefix match on `state.observations[*].tool_id`.
+3. **`assemble.pack` is called with `retrieve=False`.** The orchestrator
+   already gathered hits via the `retrieve` tool, so re-running Slice 1
+   inside Slice 2 would double the work. The packer's tool-result slots are
+   still used (`tools=observations`), keeping the citation + drop-report
+   behavior intact.
+4. **`last_step_action` is a guard, not a finish.** The brief describes the
+   cap as a successful stop; a runaway policy that always returns
+   `call_tool` is still expected to stop, with `len(steps)==max_steps`. So
+   `last_step_action` is allowed to return `call_tool` — the *loop* fires
+   the cap, not the policy. The `max_steps` test pins this.
+5. **Trajectory file is written on every exit, including failures.** A
+   `stop_reason=unknown_tool` run still produces a JSON file at
+   `artifacts/trajectories/<id>.json` so Slice 9's trajectory grader can
+   inspect the failure path.
+6. **Hard ban check.** No `while True`, no LangGraph/LangChain/CrewAI/AutoGen
+   imports, no shell/HTTP/write tool in the registered list. The
+   `InProcessExecutor` only knows `retrieve` and `read_chunk`; Slice 8
+   swaps the implementation behind the same `Executor` protocol without
+   touching the machine or the policies.
+7. **`n_citations=0` on the root trace.** The orchestrator's pack step
+   keeps `read_chunk` observations and drops `retrieve` observations (the
+   latter is redundant once the chunk is loaded). Slice 9 should grade
+   trajectory `citations` from `assemble.pack.kept_ids`, not from the raw
+   retrieval — both paths are visible in the trace tree.
+
+### Not done here (later slices, not started)
+- No sandboxed tool executor (Slice 8 replaces `InProcessExecutor`, not the
+  `Executor` protocol or the machine).
+- No trajectory eval suite (Slice 9 grades `artifacts/trajectories/*.json`).
+- The LLM driver is a skip-safe stub — `driver: llm` returns
+  `stop_reason=error` until a real structured-output client is wired in.

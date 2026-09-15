@@ -223,6 +223,41 @@
       "status": "done",
       "verify_command": "python -m contextlab.evals run --suite cache --offline  # with require_fingerprint: false",
       "notes": "Recorded in progress.md: threshold 0.99 -> should_hit 0.250 (FAIL); require_fingerprint:false -> false_hit 0.333 (FAIL, c011+c012); guards off at 0.50 -> false_hit 0.667 (c008,c009,c010,c014)"
+    },
+    {
+      "id": "feat-o1",
+      "name": "Bounded loop + max_steps",
+      "status": "done",
+      "verify_command": "pytest tests/test_orch.py::test_max_steps_cap_fires_on_runaway_policy -q",
+      "notes": "for step in range(max_steps). _AlwaysRetrievePolicy always emits call_tool; cap fires with stop_reason=max_steps and len(steps)==max_steps. No while True."
+    },
+    {
+      "id": "feat-o2",
+      "name": "InProcessExecutor + retrieve/read_chunk",
+      "status": "done",
+      "verify_command": "pytest tests/test_orch.py -q -k 'in_process or unknown'",
+      "notes": "Executor protocol with run(tool, args) -> ToolResult. Unknown tool -> UnknownToolError -> machine sets stop_reason=unknown_tool. read_chunk on a missing id returns a found=False payload, no crash."
+    },
+    {
+      "id": "feat-o3",
+      "name": "Scripted policy + CLI + trajectory file",
+      "status": "done",
+      "verify_command": "python -m contextlab.orch run --query 'what does E-4471 mean' --driver script",
+      "notes": "Happy path: retrieve -> read_chunk(E-4471) -> finish. 3 steps, stop_reason=done, trajectory_id written to artifacts/trajectories/<id>.json. CLI prints stop_reason and step log."
+    },
+    {
+      "id": "feat-o4",
+      "name": "Trace hooks (orch.run + orch.step)",
+      "status": "done",
+      "verify_command": "python -m contextlab.trace show --last",
+      "notes": "Root span orch.run (trajectory_id, stop_reason, n_steps); one orch.step per iteration (step, state, action_type, action_reason, tool); child retrieve.hybrid nested inside step 0; orch.assemble + assemble.pack after the loop."
+    },
+    {
+      "id": "feat-o5",
+      "name": "LLM driver stub (skip-safe)",
+      "status": "done",
+      "verify_command": "pytest tests/test_orch.py -q -k llm or driver",
+      "notes": "LlmPolicy(client=None) returns Action.fail('llm driver not configured'). One JSON-parse retry max; tests pass without a key. Slice 8 will swap the executor behind the same protocol, not the policy."
     }
   ]
 }

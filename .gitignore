@@ -6,6 +6,9 @@ data/cache.jsonl
 # Timestamped eval run logs (artifacts/eval_report.json is the stable snapshot)
 artifacts/eval_20*.json
 
+# Slice 7 — orchestrator trajectories (runtime artifacts, regenerated per run)
+artifacts/trajectories/
+
 # ── python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
